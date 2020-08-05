@@ -26,7 +26,12 @@ SECRET_KEY = '_y&o*lnezf8^yh$oe6&x7mcag*-p&f@myd*0q=yr)lrfz5a86='
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CORS_ORIGIN_ALLOW_ALL = False
 
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'http://localhost:8000'
+]
 
 # Application definition
 
@@ -37,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+    'horario'
 ]
 
 MIDDLEWARE = [
@@ -47,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'classSchedulerRestAPI.urls'
@@ -75,8 +84,12 @@ WSGI_APPLICATION = 'classSchedulerRestAPI.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'horario',
+        'USER': 'root',
+        'PASSWORD': 'dbTavara23!',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
