@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path
 
 from django.conf.urls import url
-from horario.views import view_profesor
+from horario.views import view_profesor, view_periodo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/horario/profesor/$', view_profesor.profesor_list),
     url(r'^api/horario/profesor/(?P<id>[^\s]+)$',
         view_profesor.profesor_detail),
+    url(r'^api/horario/periodo/$', view_periodo.periodo_list),
+    url(r'^api/horario/periodo/(?P<id>[^\s]+)$', view_periodo.periodo_detail),
 ]
