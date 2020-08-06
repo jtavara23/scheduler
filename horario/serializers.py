@@ -36,7 +36,7 @@ class FechaSerializer(serializers.ModelSerializer):
 class HoraProfePeriodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = HoraProfePeriodo
-        fields = ('id', 'carga',  'periodo_id', 'profesor_id')
+        fields = ('id', 'carga',  'periodo', 'profesor')
 
 
 class PeriodoSerializer(serializers.ModelSerializer):
