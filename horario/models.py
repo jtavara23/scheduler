@@ -29,7 +29,7 @@ class HoraProfePeriodo(models.Model):
 
 class Escuela(models.Model):
     nombre = models.CharField(
-        "Nombre Escuela", primary_key=True, max_length=50)
+        "Nombre Escuela", primary_key=True, unique=True, max_length=50)
     cursos = models.PositiveSmallIntegerField(
         "Num Cursos", default=0, null=True)
 

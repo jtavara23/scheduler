@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 from django.conf.urls import url
-from horario.views import view_profesor, view_periodo
+from horario.views import view_profesor, view_periodo, view_escuela
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +26,7 @@ urlpatterns = [
         view_profesor.profesor_detail),
     url(r'^api/horario/periodo/$', view_periodo.periodo_list),
     url(r'^api/horario/periodo/(?P<id>[^\s]+)$', view_periodo.periodo_detail),
+    url(r'^api/horario/escuela/$', view_escuela.escuela_list),
+    url(r'^api/horario/escuela/(?P<nombre>[^\s]+)$',
+        view_escuela.escuela_detail),
 ]
