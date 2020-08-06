@@ -18,7 +18,7 @@ class BloqueSerializer(serializers.ModelSerializer):
 class CursoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Curso
-        fields = ('nombre', 'secciones', 'escuela_nombre_id')
+        fields = ('nombre', 'secciones', 'escuela_nombre')
 
 
 class EscuelaSerializer(serializers.ModelSerializer):
