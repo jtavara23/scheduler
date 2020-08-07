@@ -5,14 +5,14 @@ from .models import Asignacion, Bloque, Curso, Escuela, Fecha, HoraProfePeriodo,
 class AsignacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asignacion
-        fields = ('id', 'bloque_id', 'fecha_id', 'periodo_id', 'profesor_id')
+        fields = ('id', 'bloque', 'fecha', 'periodo', 'profesor')
 
 
 class BloqueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bloque
         fields = ('id', 'nrc_t', 'nrc_p', 'nrc_l', 'aula', 'cargaHora',
-                  'curso_nombre_id', 'escuela_nombre_id', 'fecha_id', 'periodo_id')
+                  'curso_nombre', 'escuela_nombre', 'fecha', 'periodo')
 
 
 class CursoSerializer(serializers.ModelSerializer):

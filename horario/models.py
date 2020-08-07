@@ -49,9 +49,9 @@ class Bloque(models.Model):
     periodo = models.ForeignKey(Periodo, on_delete=models.DO_NOTHING)
     escuela_nombre = models.ForeignKey(Escuela, on_delete=models.DO_NOTHING)
     curso_nombre = models.ForeignKey(Curso, on_delete=models.DO_NOTHING)
-    nrc_t = models.CharField(max_length=45, default='-')
-    nrc_p = models.CharField(max_length=45, default='-')
-    nrc_l = models.CharField(max_length=45, default='-')
+    nrc_t = models.CharField(max_length=45, default='-', null=True)
+    nrc_p = models.CharField(max_length=45, default='-', null=True)
+    nrc_l = models.CharField(max_length=45, default='-', null=True)
     aula = models.CharField("Aula", max_length=45)
     cargaHora = models.PositiveSmallIntegerField(
         "Carga Horaria", default=0, null=True)
