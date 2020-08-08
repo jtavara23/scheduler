@@ -1,42 +1,39 @@
 import React, { Component } from 'react';
 import Service from './services/BloqueService';
 import styled from 'styled-components';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const service = new Service();
 
-const TablaBloqueStyled = styled.div``;
+const TablaBloqueStyled = styled.div`
+	margin-top: 6em;
+	padding-bottom: 3em;
+	margin-left: 2em;
+
+	width: 75%;
+`;
 
 class TablaBloque extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			data_rows: [],
-			nextPageURL: ''
+			data_rows: []
 		};
-		// Binding these methods in order to be accesible from HTML code
-		this.nextPage = this.nextPage.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
 	}
 
-	/* A. lifecycle method of the component that is called when the component is created and inserted into the DOM    */
+	/* A. lifecycle meTableCellod of TableCelle component TableCellat is called when TableCelle component is created and inserted into TableCelle DOM    */
 	componentDidMount() {
 		var self = this;
 		service.getBloquePeriodo().then((result) => {
 			self.setState({
-				data_rows: result.data,
-				nextPageURL: result.nextlink
-			});
-		});
-	}
-
-	/** takes the next page URL from the state object, this.state.nextPageURL, 
-     * and updates the data_rows array with the returned data. */
-	nextPage() {
-		var self = this;
-		service.getBloquePeriodoByURL(this.state.nextPageURL).then((result) => {
-			self.setState({
-				data_rows: result.data,
-				nextPageURL: result.nextlink
+				data_rows: result.data
 			});
 		});
 	}
@@ -53,49 +50,47 @@ class TablaBloque extends Component {
 	render() {
 		return (
 			<TablaBloqueStyled>
-				<div className="data_rows--list">
-					<table className="table">
-						<thead key="thead">
-							<tr>
-								<th>Escuela</th>
-								<th>Curso</th>
-								<th>NRC_T</th>
-								<th>NRC_P</th>
-								<th>NRC_L</th>
-								<th>Aula</th>
-								<th>Dia</th>
-								<th>Hora INI</th>
-								<th>Hora FIN</th>
-								<th>CargaHor</th>
-								<th>Profesor</th>
-							</tr>
-						</thead>
-						<tbody>
+				<TableContainer component={Paper}>
+					<Table stickyHeader aria-label="sticky table">
+						<TableHead>
+							<TableRow>
+								<TableCell>Escuela</TableCell>
+								<TableCell>Curso</TableCell>
+								<TableCell>NRC_T</TableCell>
+								<TableCell>NRC_P</TableCell>
+								<TableCell>NRC_L</TableCell>
+								<TableCell>Aula</TableCell>
+								<TableCell>Dia</TableCell>
+								<TableCell>Hora INI</TableCell>
+								<TableCell>Hora FIN</TableCell>
+								<TableCell>CargaHor</TableCell>
+								<TableCell>Profesor</TableCell>
+								<TableCell>Acciones</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
 							{this.state.data_rows.map((c) => (
-								<tr key={c.id}>
-									<td>{c.escuela_nombre_id} </td>
-									<td>{c.curso_nombre_id}</td>
-									<td>{c.nrc_t}</td>
-									<td>{c.nrc_p}</td>
-									<td>{c.nrc_l}</td>
-									<td>{c.aula}</td>
-									<td>{c.dia_fecha}</td>
-									<td>{c.hora_ini}</td>
-									<td>{c.hora_fin}</td>
-									<td>{c.cargaHora}</td>
-									<td>{c.nombre}</td>
-									<td>
+								<TableRow key={c.id}>
+									<TableCell>{c.escuela_nombre_id} </TableCell>
+									<TableCell>{c.curso_nombre_id}</TableCell>
+									<TableCell>{c.nrc_t}</TableCell>
+									<TableCell>{c.nrc_p}</TableCell>
+									<TableCell>{c.nrc_l}</TableCell>
+									<TableCell>{c.aula}</TableCell>
+									<TableCell>{c.dia_fecha}</TableCell>
+									<TableCell>{c.hora_ini}</TableCell>
+									<TableCell>{c.hora_fin}</TableCell>
+									<TableCell>{c.cargaHora}</TableCell>
+									<TableCell>{c.nombre}</TableCell>
+									<TableCell>
 										<button onClick={(e) => this.handleDelete(e, c.pk)}> Delete</button>
 										<a href={'/horario/periodo_bloque/' + c.pk}> Update</a>
-									</td>
-								</tr>
+									</TableCell>
+								</TableRow>
 							))}
-						</tbody>
-					</table>
-					<button className="btn btn-primary" onClick={this.nextPage}>
-						Next
-					</button>
-				</div>
+						</TableBody>
+					</Table>
+				</TableContainer>
 			</TablaBloqueStyled>
 		);
 	}
