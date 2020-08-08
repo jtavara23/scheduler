@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,16 +14,35 @@ const service = new Service();
 
 const useStyles = makeStyles({
 	root: {
-		'margin-top': '6em',
+		'margin-top': '3em',
 		'padding-bottom': '3em',
 		'margin-left': '2em',
 		width: '75%'
 	},
 
 	container: {
-		//maxHeight: 440
+		maxHeight: 756
 	}
 });
+
+const StyledTableCell = withStyles((theme) => ({
+	head: {
+		backgroundColor: theme.palette.common.black,
+		color: theme.palette.common.white
+	},
+	body: {
+		fontSize: 14
+	}
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+	root: {
+		'&:nth-of-type(odd)': {
+			backgroundColor: theme.palette.action.hover
+		}
+	}
+}))(TableRow);
+
 export default function MatPaginationTable() {
 	const classes = useStyles();
 	const [ page, setPage ] = React.useState(0);
@@ -62,48 +81,48 @@ export default function MatPaginationTable() {
 			<TableContainer className={classes.container}>
 				<Table stickyHeader aria-label="sticky table">
 					<TableHead>
-						<TableRow>
-							<TableCell>Escuela</TableCell>
-							<TableCell>Curso</TableCell>
-							<TableCell>NRC_T</TableCell>
-							<TableCell>NRC_P</TableCell>
-							<TableCell>NRC_L</TableCell>
-							<TableCell>Aula</TableCell>
-							<TableCell>Dia</TableCell>
-							<TableCell>Hora INI</TableCell>
-							<TableCell>Hora FIN</TableCell>
-							<TableCell>CargaHor</TableCell>
-							<TableCell>Profesor</TableCell>
-							<TableCell>Acciones</TableCell>
+						<TableRow hover>
+							<StyledTableCell>Escuela</StyledTableCell>
+							<StyledTableCell>Curso</StyledTableCell>
+							<StyledTableCell align="center">NRC_T</StyledTableCell>
+							<StyledTableCell align="center">NRC_P</StyledTableCell>
+							<StyledTableCell align="center">NRC_L</StyledTableCell>
+							<StyledTableCell align="center">Aula</StyledTableCell>
+							<StyledTableCell align="center">Dia</StyledTableCell>
+							<StyledTableCell align="center">Hora INI</StyledTableCell>
+							<StyledTableCell align="center">Hora FIN</StyledTableCell>
+							<StyledTableCell align="center">CargaHor</StyledTableCell>
+							<StyledTableCell align="center">Profesor</StyledTableCell>
+							<StyledTableCell align="center">Acciones</StyledTableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((c) => {
 							return (
-								<TableRow key={c.id}>
-									<TableCell>{c.escuela_nombre_id} </TableCell>
-									<TableCell>{c.curso_nombre_id}</TableCell>
-									<TableCell>{c.nrc_t}</TableCell>
-									<TableCell>{c.nrc_p}</TableCell>
-									<TableCell>{c.nrc_l}</TableCell>
-									<TableCell>{c.aula}</TableCell>
-									<TableCell>{c.dia_fecha}</TableCell>
-									<TableCell>{c.hora_ini}</TableCell>
-									<TableCell>{c.hora_fin}</TableCell>
-									<TableCell>{c.cargaHora}</TableCell>
-									<TableCell>{c.nombre}</TableCell>
-									<TableCell>
+								<StyledTableRow key={c.id}>
+									<StyledTableCell>{c.escuela_nombre_id} </StyledTableCell>
+									<StyledTableCell>{c.curso_nombre_id}</StyledTableCell>
+									<StyledTableCell align="center">{c.nrc_t}</StyledTableCell>
+									<StyledTableCell align="center">{c.nrc_p}</StyledTableCell>
+									<StyledTableCell align="center">{c.nrc_l}</StyledTableCell>
+									<StyledTableCell align="center">{c.aula}</StyledTableCell>
+									<StyledTableCell align="center">{c.dia_fecha}</StyledTableCell>
+									<StyledTableCell align="center">{c.hora_ini}</StyledTableCell>
+									<StyledTableCell align="center">{c.hora_fin}</StyledTableCell>
+									<StyledTableCell align="center">{c.cargaHora}</StyledTableCell>
+									<StyledTableCell align="center">{c.nombre}</StyledTableCell>
+									<StyledTableCell>
 										<button onClick={(e) => handleDelete(e, c.id)}> Delete</button>
 										<a href={'/horario/periodo_bloque/' + c.pk}> Update</a>
-									</TableCell>
-								</TableRow>
+									</StyledTableCell>
+								</StyledTableRow>
 							);
 						})}
 					</TableBody>
 				</Table>
 			</TableContainer>
 			<TablePagination
-				rowsPerPageOptions={[ 10, 15, 20 ]}
+				rowsPerPageOptions={[ 10, 20, 50, { value: -1, label: 'All' } ]}
 				component="div"
 				count={data.length}
 				rowsPerPage={rowsPerPage}
