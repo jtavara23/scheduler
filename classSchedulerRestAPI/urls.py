@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 from django.conf.urls import url
+from horario import view_principal
 from horario.views import view_profesor, view_periodo, view_escuela, view_curso, view_fecha, horaprofeperiodo
 
 urlpatterns = [
@@ -39,4 +40,6 @@ urlpatterns = [
         horaprofeperiodo.hora_profe_periodo_list),
     url(r'^api/horario/hora_profe_periodo/(?P<id>[^\s]+)$',
         horaprofeperiodo.hora_profe_periodo_detail),
+    url(r'^api/horario/periodo_bloque/(?P<pk>[^\s]+)$',
+        view_principal.tabla_periodo),
 ]
