@@ -1,75 +1,85 @@
-import React, { Component } from 'react';
-import Service from './services/BloqueService';
-import styled from 'styled-components';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-
+import { useState, useEffect } from 'react';
+import Service from './services/BloqueService';
 const service = new Service();
 
-const TablaBloqueStyled = styled.div`
-	margin-top: 6em;
-	padding-bottom: 3em;
-	margin-left: 2em;
+const useStyles = makeStyles({
+	root: {
+		'margin-top': '6em',
+		'padding-bottom': '3em',
+		'margin-left': '2em',
+		width: '75%'
+	},
 
-	width: 75%;
-`;
-
-class TablaBloque extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			data_rows: []
-		};
-		this.handleDelete = this.handleDelete.bind(this);
+	container: {
+		//maxHeight: 440
 	}
+});
+export default function MatPaginationTable() {
+	const classes = useStyles();
+	const [ page, setPage ] = React.useState(0);
+	const [ data, setData ] = useState([]);
+	const [ rowsPerPage, setRowsPerPage ] = React.useState(10);
 
-	/* A. lifecycle meTableCellod of TableCelle component TableCellat is called when TableCelle component is created and inserted into TableCelle DOM    */
-	componentDidMount() {
-		var self = this;
-		service.getBloquePeriodo().then((result) => {
-			self.setState({
-				data_rows: result.data
+	useEffect(() => {
+		const GetData = async () => {
+			service.getBloquePeriodo().then((result) => {
+				if (result.data.length) {
+					setData(result.data);
+				} else {
+					console.log('no data!!!');
+				}
 			});
-		});
-	}
+		};
+		GetData();
+	}, []);
 
-	/**  handles deleting a customer */
-	handleDelete(e, pk) {
-		var self = this;
+	const handleChangePage = (event, newPage) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(+event.target.value);
+		setPage(0);
+	};
+	const handleDelete = (e, pk) => {
 		service.deleteBloquePeriodoRow({ pk: pk }).then(() => {
-			var newList = self.state.data_rows.filter((obj) => obj.pk !== pk);
-			self.setState({ data_rows: newList });
+			var newList = data.filter((obj) => obj.pk !== pk);
+			setData(newList);
 		});
-	}
-
-	render() {
-		return (
-			<TablaBloqueStyled>
-				<TableContainer component={Paper}>
-					<Table stickyHeader aria-label="sticky table">
-						<TableHead>
-							<TableRow>
-								<TableCell>Escuela</TableCell>
-								<TableCell>Curso</TableCell>
-								<TableCell>NRC_T</TableCell>
-								<TableCell>NRC_P</TableCell>
-								<TableCell>NRC_L</TableCell>
-								<TableCell>Aula</TableCell>
-								<TableCell>Dia</TableCell>
-								<TableCell>Hora INI</TableCell>
-								<TableCell>Hora FIN</TableCell>
-								<TableCell>CargaHor</TableCell>
-								<TableCell>Profesor</TableCell>
-								<TableCell>Acciones</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{this.state.data_rows.map((c) => (
+	};
+	return (
+		<Paper className={classes.root}>
+			<TableContainer className={classes.container}>
+				<Table stickyHeader aria-label="sticky table">
+					<TableHead>
+						<TableRow>
+							<TableCell>Escuela</TableCell>
+							<TableCell>Curso</TableCell>
+							<TableCell>NRC_T</TableCell>
+							<TableCell>NRC_P</TableCell>
+							<TableCell>NRC_L</TableCell>
+							<TableCell>Aula</TableCell>
+							<TableCell>Dia</TableCell>
+							<TableCell>Hora INI</TableCell>
+							<TableCell>Hora FIN</TableCell>
+							<TableCell>CargaHor</TableCell>
+							<TableCell>Profesor</TableCell>
+							<TableCell>Acciones</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((c) => {
+							return (
 								<TableRow key={c.id}>
 									<TableCell>{c.escuela_nombre_id} </TableCell>
 									<TableCell>{c.curso_nombre_id}</TableCell>
@@ -83,17 +93,24 @@ class TablaBloque extends Component {
 									<TableCell>{c.cargaHora}</TableCell>
 									<TableCell>{c.nombre}</TableCell>
 									<TableCell>
-										<button onClick={(e) => this.handleDelete(e, c.pk)}> Delete</button>
+										<button onClick={(e) => handleDelete(e, c.id)}> Delete</button>
 										<a href={'/horario/periodo_bloque/' + c.pk}> Update</a>
 									</TableCell>
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</TablaBloqueStyled>
-		);
-	}
+							);
+						})}
+					</TableBody>
+				</Table>
+			</TableContainer>
+			<TablePagination
+				rowsPerPageOptions={[ 10, 15, 20 ]}
+				component="div"
+				count={data.length}
+				rowsPerPage={rowsPerPage}
+				page={page}
+				onChangePage={handleChangePage}
+				onChangeRowsPerPage={handleChangeRowsPerPage}
+			/>
+		</Paper>
+	);
 }
-
-export default TablaBloque;
