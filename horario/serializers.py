@@ -61,16 +61,18 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
 
 class TablaPeriodoSerializer(serializers.Serializer):
+    bloque_id = serializers.IntegerField()
     escuela_nombre_id = serializers.CharField()
     curso_nombre_id = serializers.CharField()
     nrc_t = serializers.CharField()
     nrc_p = serializers.CharField()
     nrc_l = serializers.CharField()
     aula = serializers.CharField()
+    fecha_id = serializers.IntegerField()
     dia_fecha = serializers.CharField()
     hora_ini = serializers.TimeField()
     hora_fin = serializers.TimeField()
-    id = serializers.IntegerField()
+    asig_id = serializers.IntegerField()
     cargaHora = serializers.IntegerField()
     profesor_id = serializers.IntegerField()
     nombre = serializers.CharField()

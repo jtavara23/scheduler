@@ -25,8 +25,8 @@ urlpatterns = [
     url(r'^api/horario/profesor/$', view_profesor.profesor_list),
     url(r'^api/horario/profesor/(?P<id>[^\s]+)$',  # id_profesor
         view_profesor.profesor_detail),
-    url(r'^api/horario/periodo/$', view_periodo.periodo_list),
-    url(r'^api/horario/periodo/(?P<id>[^\s]+)$', view_periodo.periodo_detail),
+    url(r'^api/horario/periodos/$', view_periodo.periodo_list),
+    url(r'^api/horario/periodos/(?P<id>[^\s]+)$', view_periodo.periodo_detail),
     url(r'^api/horario/escuela/$', view_escuela.escuela_list),
     url(r'^api/horario/escuela/(?P<nombre>[^\s]+)$',
         view_escuela.escuela_detail),
@@ -40,6 +40,10 @@ urlpatterns = [
         horaprofeperiodo.hora_profe_periodo_list),
     url(r'^api/horario/hora_profe_periodo/(?P<id>[^\s]+)$',
         horaprofeperiodo.hora_profe_periodo_detail),
-    url(r'^api/horario/periodo_bloque/(?P<pk>[^\s]+)$',
-        view_principal.tabla_periodo),
+    url(r'^api/horario/periodo/(?P<pk>[^\s]+)$',
+        view_principal.tabla_periodo),  # get get_tabla_periodo store procedure
+    url(r'^api/horario/bloque/(?P<pk>[^\s]+)$',
+        view_principal.bloque),
+    url(r'^api/horario/asignacion/(?P<pk>[^\s]+)$',
+        view_principal.asignacion),
 ]

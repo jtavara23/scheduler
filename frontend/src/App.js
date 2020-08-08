@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom'; // BrowserRouter keeps the UI 
 import { Route } from 'react-router-dom';
 import './App.css';
 import TablaBloque from './TablaBloque';
+import TablaBloque_CreateUpdate from './TablaBloque_CreateUpdate';
 
 const BaseLayout = () => (
 	<div className="container-fluid">
@@ -26,14 +27,15 @@ const BaseLayout = () => (
 					<a className="nav-item nav-link" href="/">
 						DETALLES
 					</a>
-					<a className="nav-item nav-link" href="/curso">
-						CREATE NUEVO CURSO
+					<a className="nav-item nav-link" href="/bloque/">
+						CREATE NUEVA FILA
 					</a>
 				</div>
 			</div>
 		</nav>
 		<div className="content">
 			<Route path="/" exact component={TablaBloque} />
+			<Route path="/bloque/" exact component={TablaBloque_CreateUpdate} />
 		</div>
 	</div>
 );

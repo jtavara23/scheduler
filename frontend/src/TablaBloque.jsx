@@ -127,7 +127,7 @@ export default function MatPaginationTable() {
 
 	useEffect(() => {
 		const GetData = async () => {
-			service.getBloquePeriodo().then((result) => {
+			service.getPeriodo().then((result) => {
 				if (result.data.length) {
 					setData(result.data);
 				} else {
@@ -212,13 +212,13 @@ export default function MatPaginationTable() {
 					</TableHead>
 					<TableBody>
 						{data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((c, index) => {
-							const isItemSelected = isSelected(c.id);
+							const isItemSelected = isSelected(c.asig_id);
 							const labelId = `enhanced-table-checkbox-${index}`;
 							return (
 								<StyledTableRow
 									hover
-									key={c.id}
-									onClick={(event) => handleClick(event, c.id)}
+									key={c.asig_id}
+									onClick={(event) => handleClick(event, c.asig_id)}
 									selected={isItemSelected}
 								>
 									<TableCell padding="checkbox">
@@ -239,8 +239,8 @@ export default function MatPaginationTable() {
 									<StyledTableCell align="center">{c.cargaHora}</StyledTableCell>
 									<StyledTableCell align="center">{c.nombre}</StyledTableCell>
 									<StyledTableCell>
-										<button onClick={(e) => handleDelete(e, c.id)}> Delete</button>
-										<a href={'/horario/periodo_bloque/' + c.pk}> Update</a>
+										<button onClick={(e) => handleDelete(e, c.asig_id)}> Delete</button>
+										<a href={'/bloque/' + c.bloque_id}> Update</a>
 									</StyledTableCell>
 								</StyledTableRow>
 							);

@@ -32,3 +32,47 @@ def tabla_periodo(request, pk):
             serializer.save()  # saves in the DB
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def bloque(request, pk):
+    try:
+        escuela = Bloque.objects.get(pk=pk)
+    except Escuela.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = BloqueSerializer(escuela, context={'request': request})
+        return Response({
+            'data': serializer.data
+        })
+
+    elif request.method == 'POST':
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()  # saves in the DB
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def asignacion(request, pk):
+    if request.method == 'GET':
+        cursor = connection.cursor()
+        statement = "call get_tabla_periodo("+pk+")"
+        cursor.execute(statement)
+        results = dictfetchall(cursor)
+        cursor.close()
+
+        serializer = TablaPeriodoSerializer(
+            results, context={'request': request}, many=True)
+        return Response({
+            'data': serializer.data
+        })
+
+    elif request.method == 'POST':
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()  # saves in the DB
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
