@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles, lighten } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,22 +8,23 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import { useState, useEffect } from 'react';
 import Service from './services/BloqueService';
 const service = new Service();
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		'margin-top': '3em',
 		'padding-bottom': '3em',
-		'margin-left': '2em',
-		width: '75%'
+		'margin-left': '2em'
+		//width: '75%'
 	},
-
 	container: {
 		maxHeight: 756
 	}
-});
+}));
 
 const StyledTableCell = withStyles((theme) => ({
 	head: {
@@ -36,18 +37,19 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 const StyledTableRow = withStyles((theme) => ({
-	root: {
+	/*	root: {
 		'&:nth-of-type(odd)': {
 			backgroundColor: theme.palette.action.hover
 		}
-	}
+	}*/
 }))(TableRow);
 
 export default function MatPaginationTable() {
 	const classes = useStyles();
 	const [ page, setPage ] = React.useState(0);
 	const [ data, setData ] = useState([]);
-	const [ rowsPerPage, setRowsPerPage ] = React.useState(10);
+	const [ rowsPerPage, setRowsPerPage ] = React.useState(20);
+	const [ dense, setDense ] = React.useState(true);
 
 	useEffect(() => {
 		const GetData = async () => {
@@ -70,18 +72,25 @@ export default function MatPaginationTable() {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
+
 	const handleDelete = (e, pk) => {
 		service.deleteBloquePeriodoRow({ pk: pk }).then(() => {
 			var newList = data.filter((obj) => obj.pk !== pk);
 			setData(newList);
 		});
 	};
+
+	const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+	const handleChangeDense = (event) => {
+		setDense(event.target.checked);
+	};
+
 	return (
 		<Paper className={classes.root}>
 			<TableContainer className={classes.container}>
-				<Table stickyHeader aria-label="sticky table">
+				<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
 					<TableHead>
-						<TableRow hover>
+						<TableRow>
 							<StyledTableCell>Escuela</StyledTableCell>
 							<StyledTableCell>Curso</StyledTableCell>
 							<StyledTableCell align="center">NRC_T</StyledTableCell>
@@ -99,7 +108,7 @@ export default function MatPaginationTable() {
 					<TableBody>
 						{data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((c) => {
 							return (
-								<StyledTableRow key={c.id}>
+								<StyledTableRow hover key={c.id}>
 									<StyledTableCell>{c.escuela_nombre_id} </StyledTableCell>
 									<StyledTableCell>{c.curso_nombre_id}</StyledTableCell>
 									<StyledTableCell align="center">{c.nrc_t}</StyledTableCell>
@@ -118,6 +127,11 @@ export default function MatPaginationTable() {
 								</StyledTableRow>
 							);
 						})}
+						{emptyRows > 0 && (
+							<TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+								<TableCell colSpan={12} />
+							</TableRow>
+						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
@@ -130,6 +144,7 @@ export default function MatPaginationTable() {
 				onChangePage={handleChangePage}
 				onChangeRowsPerPage={handleChangeRowsPerPage}
 			/>
+			<FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
 		</Paper>
 	);
 }
