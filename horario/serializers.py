@@ -22,6 +22,20 @@ class BloqueSerializer(serializers.ModelSerializer):
         model = Bloque
         fields = ('id', 'nrc_t', 'nrc_p', 'nrc_l', 'aula', 'cargaHora',
                   'curso_nombre', 'escuela_nombre', 'fecha', 'periodo')
+        extra_kwargs = {
+            'nrc_t': {
+                'required': False,
+                'allow_blank': True,
+            },
+            'nrc_l': {
+                'required': False,
+                'allow_blank': True,
+            },
+            'nrc_p': {
+                'required': False,
+                'allow_blank': True,
+            }
+        }
 
 
 class CursoSerializer(serializers.ModelSerializer):

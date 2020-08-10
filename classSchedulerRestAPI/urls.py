@@ -44,8 +44,9 @@ urlpatterns = [
         horaprofeperiodo.hora_profe_periodo_detail),
     url(r'^api/horario/periodo/(?P<pk>[^\s]+)$',
         view_principal.tabla_periodo),  # get get_tabla_periodo store procedure
+    url(r'^api/horario/bloque/$', view_principal.bloque_create),
     url(r'^api/horario/bloque/(?P<pk>[^\s]+)$',
-        view_principal.bloque),
+        view_principal.bloque_get_update),
     url(r'^api/horario/asignacion/(?P<pk>[^\s]+)$',
         view_principal.asignacion),
 ]
