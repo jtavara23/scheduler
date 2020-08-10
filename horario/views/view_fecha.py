@@ -3,7 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 # fecha in row 142 from original DB doesnt make sense. check it out
 from ..models import Fecha
-from ..serializers import FechaSerializer
+from ..serializers import FechaSerializer, dictfetchall
+from django.db import connection
 
 
 @api_view(['GET', 'POST'])
@@ -21,17 +22,19 @@ def fecha_list(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif isinstance(request.data, list):
-            list_fecha = request.data
-            good = 0
-            for profesor_obj in list_fecha:
-                serializer = FechaSerializer(data=profesor_obj)
-                if serializer.is_valid():
-                    serializer.save()
-                    good = good + 1
-            if good == len(list_fecha):
-                return Response(str(good) + " objects were added", status=status.HTTP_201_CREATED)
         return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def fecha_lookup(request, data):
+    data = data.split('-')
+    cursor = connection.cursor()
+    statement = "call get_fecha_id('" + \
+        data[0]+"','" + data[1]+"','" + data[2]+"')"
+    cursor.execute(statement)
+    result = dictfetchall(cursor)
+    cursor.close()
+    return Response(result)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])

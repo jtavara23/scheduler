@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'^api/horario/fecha/$', view_fecha.fecha_list),
     url(r'^api/horario/fecha/(?P<id>[^\s]+)$',
         view_fecha.fecha_detail),
+    url(r'^api/horario/fecha_lookup/(?P<data>[^\s]+)$',
+        view_fecha.fecha_lookup),
     url(r'^api/horario/hora_profe_periodo/$',
         horaprofeperiodo.hora_profe_periodo_list),
     url(r'^api/horario/hora_profe_periodo/(?P<id>[^\s]+)$',
