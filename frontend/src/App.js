@@ -36,6 +36,7 @@ const BaseLayout = () => (
 		<div className="content">
 			<Route path="/" exact component={TablaBloque} />
 			<Route path="/bloque/" exact component={TablaBloque_CreateUpdate} />
+			<Route path="/bloque/:pk" exact component={TablaBloque_CreateUpdate} />
 		</div>
 	</div>
 );

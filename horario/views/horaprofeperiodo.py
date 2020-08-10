@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-
+from django.core import serializers
 from ..models import HoraProfePeriodo
 from ..serializers import HoraProfePeriodoSerializer
 
@@ -34,20 +34,20 @@ def hora_profe_periodo_list(request):
         return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['PUT', 'DELETE'])
 def hora_profe_periodo_detail(request, id):
     try:
         hora_profe_periodo = HoraProfePeriodo.objects.get(pk=id)
     except HoraProfePeriodo.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
+    """
     if request.method == 'GET':
         serializer = HoraProfePeriodoSerializer(
             hora_profe_periodo, context={'request': request})
         return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        #old_hora_profe_periodo = hora_profe_periodo
+    """
+    if request.method == 'PUT':
+        # old_hora_profe_periodo = hora_profe_periodo
         serializer = HoraProfePeriodoSerializer(
             hora_profe_periodo, data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -59,3 +59,16 @@ def hora_profe_periodo_detail(request, id):
     elif request.method == 'DELETE':
         hora_profe_periodo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def hora_profe_periodo_carga(request, data):
+    param = data.split('-')  # periodo - profesor
+    try:
+        prof_periodo_cargaTotal = HoraProfePeriodo.objects.filter(
+            periodo=param[0], profesor=param[1])
+    except HoraProfePeriodo.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    result = list(prof_periodo_cargaTotal.values())
+    data = {'id': result[0]['id'], 'carga':  result[0]['carga']}
+    return Response(data, status=status.HTTP_202_ACCEPTED)

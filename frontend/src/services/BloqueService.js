@@ -5,8 +5,8 @@ const API_URL = 'http://localhost:8000';
 class BloqueService {
 	constructor() {}
 
-	getPeriodo(pk) {
-		const url = `${API_URL}/api/horario/periodo/${5}`;
+	getAsignacion(pk) {
+		const url = `${API_URL}/api/horario/asignacion/${pk}`;
 		return axios.get(url).then((response) => response.data);
 	}
 
@@ -15,14 +15,34 @@ class BloqueService {
 		return axios.get(url).then((response) => response.data);
 	}
 
+	getHoraProfePeriodo(param) {
+		const url = `${API_URL}/api/horario/hora_profe_periodo_carga/${param}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
+	getEscuelas() {
+		const url = `${API_URL}/api/horario//escuela/`;
+		return axios.get(url).then((response) => response.data);
+	}
+
 	getFecha(pk) {
 		const url = `${API_URL}/api/horario/fecha/${pk}`;
 		return axios.get(url).then((response) => response.data);
 	}
-
-	getAsignacion(pk) {
-		const url = `${API_URL}/api/horario/asignacion/${pk}`;
+	getFechaLookUp(pk) {
+		const url = `${API_URL}/api/horario/fecha_lookup/${pk}`;
 		return axios.get(url).then((response) => response.data);
+	}
+
+	getPeriodo(pk) {
+		const url = `${API_URL}/api/horario/periodo/${5}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
+	/**----------------------------------------------------- */
+	createAsignacion(asignacion) {
+		const url = `${API_URL}/api/horario/asignacion/`;
+		return axios.post(url, asignacion);
 	}
 
 	createBloque(bloque) {
@@ -30,22 +50,20 @@ class BloqueService {
 		return axios.post(url, bloque);
 	}
 
-	createAsignacion(asignacion) {
-		const url = `${API_URL}/api/horario/asignacion/`;
-		return axios.post(url, asignacion);
+	createFecha(fecha) {
+		const url = `${API_URL}/api/horario/fecha/`;
+		return axios.post(url, fecha);
 	}
 
-	/*
-	updateBloqueAsignacion(objecto) {
-		const url = `${API_URL}/api/horario/bloque_asignacion/${objecto.a_id}/${objecto.b_id}`;
-		return axios.put(url, objecto)
+	/**----------------------------------------------------- */
+	updateAsignacion(asignacion) {
+		const url = `${API_URL}/api/horario/asignacion/${asignacion.pk}`;
+		return axios.put(url, asignacion);
 	}
 
-*/
-
-	getEscuelas() {
-		const url = `${API_URL}/api/horario//escuela/`;
-		return axios.get(url).then((response) => response.data);
+	updateCargaProfesor(cargaProfesor) {
+		const url = `${API_URL}/api/horario/hora_profe_periodo/${cargaProfesor.id}`;
+		return axios.put(url, cargaProfesor);
 	}
 }
 

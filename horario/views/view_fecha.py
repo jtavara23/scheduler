@@ -18,11 +18,22 @@ def fecha_list(request):
         })
 
     elif request.method == 'POST':
-        serializer = FechaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
+        try:
+            fecha_obj = Fecha.objects.filter(
+                dia_fecha=request.data['dia_fecha'],
+                hora_ini=request.data['hora_ini'],
+                hora_fin=request.data['hora_fin'])
+            fecha = list(fecha_obj.values())
+            if(len(fecha) > 0):
+                return Response({'id': fecha[0]['id']}, status=status.HTTP_202_ACCEPTED)
+            else:
+                serializer = FechaSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"id": serializer.data['id']}, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
+        except Fecha.DoesNotExist:
+            return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

@@ -42,11 +42,15 @@ urlpatterns = [
         horaprofeperiodo.hora_profe_periodo_list),
     url(r'^api/horario/hora_profe_periodo/(?P<id>[^\s]+)$',
         horaprofeperiodo.hora_profe_periodo_detail),
+    url(r'^api/horario/hora_profe_periodo_carga/(?P<data>[^\s]+)$',
+        horaprofeperiodo.hora_profe_periodo_carga),
+
     url(r'^api/horario/periodo/(?P<pk>[^\s]+)$',
         view_principal.tabla_periodo),  # get get_tabla_periodo store procedure
     url(r'^api/horario/bloque/$', view_principal.bloque_create),
     url(r'^api/horario/bloque/(?P<pk>[^\s]+)$',
         view_principal.bloque_get_update),
+    url(r'^api/horario/asignacion/$', view_principal.asignacion_create),
     url(r'^api/horario/asignacion/(?P<pk>[^\s]+)$',
-        view_principal.asignacion),
+        view_principal.asignacion_get_update),
 ]
