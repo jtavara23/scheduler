@@ -38,19 +38,19 @@ def bloque_create(request):
 @api_view(['GET', 'PUT'])
 def bloque_get_update(request, pk):
     try:
-        escuela = Bloque.objects.get(pk=pk)
+        bloque = Bloque.objects.get(pk=pk)
     except Escuela.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = BloqueSerializer(escuela, context={'request': request})
+        serializer = BloqueSerializer(bloque, context={'request': request})
         return Response({
             'data': serializer.data
         })
 
     elif request.method == 'PUT':
-        # /TODO
-        serializer = BloqueSerializer(data=request.data)
+        serializer = BloqueSerializer(
+            bloque, data=request.data,  context={'request': request})
         if serializer.is_valid():
             serializer.save()  # saves in the DB
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -86,3 +86,36 @@ def asignacion_get_update(request, pk):
             serializer.save()  # saves in the DB
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT'])
+def asignacion_bloque_get_update(request, bloque_id):
+    try:
+        # print(request.data['bloque'])
+        asignacion = Asignacion.objects.filter(bloque=bloque_id)
+    except Asignacion.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        results = []
+        asignaciones = list(asignacion.values())
+        for asig in asignaciones:
+            serializer = AsignacionSerializer(
+                asig, context={'request': request})
+            results += [serializer.data]
+        return Response({
+            'data': results
+        })
+    # This updates only the FECHA field
+    elif request.method == 'PUT':
+        asignaciones = list(asignacion)
+        new_fecha = request.data['fecha']
+        query = "UPDATE horario_asignacion set fecha_id =" + str(new_fecha)
+        cursor = connection.cursor()
+        for asig in asignaciones:
+            print(">> Updating asignacion_id: ",
+                  asig.id, "to fecha: ", new_fecha)
+            cursor.execute(
+                query + " WHERE id = %s", asig.id)
+        cursor.close()
+        return Response("OK", status=status.HTTP_202_ACCEPTED)

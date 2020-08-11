@@ -52,14 +52,22 @@ class BloqueService {
 	}
 
 	/**----------------------------------------------------- */
-	updateAsignacion(asignacion) {
-		const url = `${API_URL}/api/horario/asignacion/${asignacion.pk}`;
+	updateAsignacion_Fecha(asignacion) {
+		const url = `${API_URL}/api/horario/asignacion_bloque/${asignacion.bloque}`;
 		return axios.put(url, asignacion);
 	}
 
 	updateCargaProfesor(cargaProfesor) {
 		const url = `${API_URL}/api/horario/hora_profe_periodo/${cargaProfesor.id}`;
 		return axios.put(url, cargaProfesor);
+	}
+	updateFecha(fecha) {
+		const url = `${API_URL}/api/horario/fecha/`;
+		return axios.put(url, fecha);
+	}
+	updateBloque(bloque) {
+		const url = `${API_URL}/api/horario/bloque/${bloque.id}`;
+		return axios.put(url, bloque);
 	}
 }
 

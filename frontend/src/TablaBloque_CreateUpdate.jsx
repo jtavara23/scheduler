@@ -31,7 +31,10 @@ function createJsonFecha(param) {
 class Bloque_CreateUpdate extends React.Component {
 	constructor(props) {
 		super(props);
-		this.fecha = 0;
+		this.fecha_id = 0;
+		this.periodo_id = 0;
+		this.bloque_id = 0;
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -40,24 +43,29 @@ class Bloque_CreateUpdate extends React.Component {
 		if (params && params.pk) {
 			service.getBloque(params.pk).then((c) => {
 				let data = c.data;
+				this.bloque_id = data.id;
+				this.fecha_id = data.fecha;
+				this.periodo_id = data.periodo;
+
 				this.refs.escuela.value = data.escuela_nombre;
 				this.refs.curso.value = data.curso_nombre;
 				this.refs.aula.value = data.aula;
 				this.refs.horas.value = data.cargaHora;
+
 				if (c.data.nrc_t) this.refs.nrc_t.value = data.nrc_t;
 				else if (data.nrc_p) this.refs.nrc_p.value = data.nrc_p;
 				else this.refs.nrc_l.value = data.nrc_l;
 
 				let fecha_id = data.fecha;
-				service.getFecha(fecha_id).then((c) => {
-					console.log(c);
-					if (c) {
-						this.refs.dia.value = c.dia_fecha;
-						this.refs.hora_ini.value = c.hora_ini;
-						this.refs.hora_fin.value = c.hora_fin;
+				service.getFecha(fecha_id).then((f) => {
+					if (f) {
+						this.refs.dia.value = f.dia_fecha;
+						this.refs.hora_ini.value = f.hora_ini;
+						this.refs.hora_fin.value = f.hora_fin;
 					} else console.log('No fecha id');
 				});
 			});
+			this.refs.boton.value = 'Editar';
 		}
 	}
 
@@ -70,13 +78,7 @@ class Bloque_CreateUpdate extends React.Component {
 		}
 		event.preventDefault();
 	}
-	/**
-	 * 
-	 * if (result && result.length > 0) {
-					fecha_id = result[0].id;
-					console.log('fecha found ', fecha_id);
-				}
-	 */
+
 	handleCreate() {
 		let param = this.refs.dia.value + '-' + this.refs.hora_ini.value + '-' + this.refs.hora_fin.value;
 		let fecha_id = 0;
@@ -152,22 +154,36 @@ class Bloque_CreateUpdate extends React.Component {
 	}
 
 	handleUpdate(pk) {
-		/*customerService
-			.updateCustomer({
-				pk: pk,
-				first_name: this.refs.firstName.value,
-				last_name: this.refs.lastName.value,
-				email: this.refs.email.value,
-				phone: this.refs.phone.value,
-				address: this.refs.address.value,
-				description: this.refs.description.value
-			})
-			.then((result) => {
-				alert('Customer updated!');
-			})
-			.catch(() => {
-				alert('There was an error! Please re-check your form.');
-			});*/
+		let param = this.refs.dia.value + '-' + this.refs.hora_ini.value + '-' + this.refs.hora_fin.value;
+
+		service.updateFecha(createJsonFecha(param)).then((result) => {
+			let fecha_id = result.data.id;
+			service
+				.updateBloque({
+					id: this.bloque_id,
+					nrc_t: this.refs.nrc_t.value,
+					nrc_p: this.refs.nrc_p.value,
+					nrc_l: this.refs.nrc_l.value,
+					aula: this.refs.aula.value,
+					cargaHora: this.refs.horas.value,
+					curso_nombre: this.refs.curso.value,
+					escuela_nombre: this.refs.escuela.value,
+					fecha: fecha_id,
+					periodo: this.periodo_id
+				})
+				.then((response) => {
+					service
+						.updateAsignacion_Fecha({
+							// you can not change bloque or periodo in Asignacion (just fecha and profesor)
+							bloque: this.bloque_id,
+							fecha: fecha_id,
+							periodo: this.periodo_id
+						})
+						.then((result) => {
+							console.log(' Bloque Actualizado!!');
+						});
+				});
+		});
 	}
 
 	render() {
@@ -206,7 +222,7 @@ class Bloque_CreateUpdate extends React.Component {
 					<label>Hora fin</label>
 					<input className="form-control" type="text" ref="hora_fin" />
 
-					<input className="btn btn-primary" type="submit" value="Submit" />
+					<input className="btn btn-primary" type="submit" ref="boton" value="Crear" />
 				</div>
 			</form>
 		);

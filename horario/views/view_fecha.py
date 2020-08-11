@@ -7,7 +7,15 @@ from ..serializers import FechaSerializer, dictfetchall
 from django.db import connection
 
 
-@api_view(['GET', 'POST'])
+def find_created_fecha(request):
+    fecha_obj = Fecha.objects.filter(
+        dia_fecha=request.data['dia_fecha'],
+        hora_ini=request.data['hora_ini'],
+        hora_fin=request.data['hora_fin'])
+    return list(fecha_obj.values())
+
+
+@api_view(['GET', 'PUT', 'POST'])
 def fecha_list(request):
     if request.method == 'GET':
         fechas = Fecha.objects.all()
@@ -23,7 +31,7 @@ def fecha_list(request):
                 dia_fecha=request.data['dia_fecha'],
                 hora_ini=request.data['hora_ini'],
                 hora_fin=request.data['hora_fin'])
-            fecha = list(fecha_obj.values())
+            fecha = find_created_fecha(request)
             if(len(fecha) > 0):
                 return Response({'id': fecha[0]['id']}, status=status.HTTP_202_ACCEPTED)
             else:
@@ -33,6 +41,17 @@ def fecha_list(request):
                     return Response({"id": serializer.data['id']}, status=status.HTTP_201_CREATED)
                 return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
         except Fecha.DoesNotExist:
+            return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'PUT':
+        fecha = find_created_fecha(request)
+        if(len(fecha) > 0):
+            return Response({'id': fecha[0]['id']}, status=status.HTTP_202_ACCEPTED)
+        else:
+            serializer = FechaSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"id": serializer.data['id']}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 

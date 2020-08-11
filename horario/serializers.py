@@ -14,7 +14,7 @@ def dictfetchall(cursor):
 class AsignacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asignacion
-        fields = ('id', 'bloque', 'fecha', 'periodo', 'profesor')
+        fields = ('id', 'bloque_id', 'fecha_id', 'periodo_id', 'profesor_id')
 
 
 class BloqueSerializer(serializers.ModelSerializer):
