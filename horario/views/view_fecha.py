@@ -36,18 +36,6 @@ def fecha_list(request):
             return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-def fecha_lookup(request, data):
-    data = data.split('-')
-    cursor = connection.cursor()
-    statement = "call get_fecha_id('" + \
-        data[0]+"','" + data[1]+"','" + data[2]+"')"
-    cursor.execute(statement)
-    result = dictfetchall(cursor)
-    cursor.close()
-    return Response(result)
-
-
 @api_view(['GET', 'PUT', 'DELETE'])
 def fecha_detail(request, id):
     try:

@@ -29,10 +29,6 @@ class BloqueService {
 		const url = `${API_URL}/api/horario/fecha/${pk}`;
 		return axios.get(url).then((response) => response.data);
 	}
-	getFechaLookUp(pk) {
-		const url = `${API_URL}/api/horario/fecha_lookup/${pk}`;
-		return axios.get(url).then((response) => response.data);
-	}
 
 	getPeriodo(pk) {
 		const url = `${API_URL}/api/horario/periodo/${5}`;
