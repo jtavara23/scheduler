@@ -126,10 +126,10 @@ export default function MatPaginationTable() {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(30);
 	const [ dense, setDense ] = React.useState(true);
 	const [ selected, setSelected ] = React.useState([]);
-
+	const periodo_id = 5;
 	useEffect(() => {
 		const GetData = async () => {
-			service.getPeriodo().then((result) => {
+			service.getPeriodo(periodo_id).then((result) => {
 				if (result.data.length) {
 					setData(result.data);
 				} else {
@@ -147,13 +147,6 @@ export default function MatPaginationTable() {
 	const handleChangeRowsPerPage = (event) => {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
-	};
-
-	const handleDelete = (e, pk) => {
-		service.deleteBloquePeriodoRow({ pk: pk }).then(() => {
-			var newList = data.filter((obj) => obj.pk !== pk);
-			setData(newList);
-		});
 	};
 
 	const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -190,6 +183,32 @@ export default function MatPaginationTable() {
 	const isSelected = (name) => selected.indexOf(name) !== -1;
 	/*-------------------------------------    */
 	const history = useHistory();
+	/*-------------------------------------    */
+	const handleDelete = (e, pk, cargaHora, profesor_id) => {
+		service.deleteAsignacion(pk).then((response) => {
+			service.getHoraProfePeriodo(periodo_id + '-' + profesor_id).then((response2) => {
+				let hpp_id = response2.id;
+				let cargaTotal_profesor = response2.carga;
+				cargaTotal_profesor = cargaTotal_profesor - cargaHora;
+				service
+					.updateCargaProfesor({
+						id: hpp_id, // hora_profesor_periodo_id
+						carga: cargaTotal_profesor,
+						periodo: periodo_id,
+						profesor: profesor_id
+					})
+					.then((result) => {
+						var newList = data.filter((obj) => obj.asig_id !== pk);
+						setData(newList);
+						console.log('we delete sucessfully ', result);
+					})
+					.catch(() => {
+						console.log('no deletion has been done');
+					});
+			});
+		});
+	};
+
 	return (
 		<Paper className={classes.root}>
 			<EnhancedTableToolbar numSelected={selected.length} />
@@ -217,13 +236,8 @@ export default function MatPaginationTable() {
 							const isItemSelected = isSelected(c.asig_id);
 							const labelId = `enhanced-table-checkbox-${index}`;
 							return (
-								<StyledTableRow
-									hover
-									key={c.asig_id}
-									onClick={(event) => handleClick(event, c.asig_id)}
-									selected={isItemSelected}
-								>
-									<TableCell padding="checkbox">
+								<StyledTableRow hover key={c.asig_id} selected={isItemSelected}>
+									<TableCell padding="checkbox" onClick={(event) => handleClick(event, c.asig_id)}>
 										<Checkbox
 											checked={isItemSelected}
 											inputProps={{ 'aria-labelledby': labelId }}
@@ -249,7 +263,7 @@ export default function MatPaginationTable() {
 												</IconButton>
 											</Tooltip>
 										</a>
-										<a onClick={(e) => handleDelete(e, c.asig_id)}>
+										<a onClick={(e) => handleDelete(e, c.asig_id, c.cargaHora, c.profesor_id)}>
 											<Tooltip title="ELIMINAR">
 												<IconButton aria-label="delete">
 													<DeleteIcon />

@@ -65,9 +65,9 @@ def asignacion_create(request):
     return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT'])
-def asignacion_get_update(request, pk):
-    # i think this will be never used!!!!
+@api_view(['GET', 'DELETE'])
+def asignacion_get_delete(request, pk):
+    # i think GET will be never used!!!!
     try:
         asignacion = Asignacion.objects.get(pk=pk)
     except Asignacion.DoesNotExist:
@@ -80,12 +80,9 @@ def asignacion_get_update(request, pk):
             'data': serializer.data
         })
 
-    elif request.method == 'PUT':
-        serializer = AsignacionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()  # saves in the DB
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        asignacion.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET', 'PUT'])

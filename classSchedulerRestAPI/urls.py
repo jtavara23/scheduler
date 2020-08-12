@@ -25,7 +25,7 @@ urlpatterns = [
 
     url(r'^api/horario/asignacion/$', view_principal.asignacion_create),
     url(r'^api/horario/asignacion/(?P<pk>[^\s]+)$',
-        view_principal.asignacion_get_update),
+        view_principal.asignacion_get_delete),
     url(r'^api/horario/asignacion_bloque/(?P<bloque_id>[^\s]+)$',
         view_principal.asignacion_bloque_get_update),
 

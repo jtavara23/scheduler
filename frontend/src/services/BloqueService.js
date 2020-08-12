@@ -31,7 +31,7 @@ class BloqueService {
 	}
 
 	getPeriodo(pk) {
-		const url = `${API_URL}/api/horario/periodo/${5}`;
+		const url = `${API_URL}/api/horario/periodo/${pk}`;
 		return axios.get(url).then((response) => response.data);
 	}
 
@@ -68,6 +68,11 @@ class BloqueService {
 	updateBloque(bloque) {
 		const url = `${API_URL}/api/horario/bloque/${bloque.id}`;
 		return axios.put(url, bloque);
+	}
+	/**----------------------------------------------------- */
+	deleteAsignacion(asignacion_id) {
+		const url = `${API_URL}/api/horario/asignacion/${asignacion_id}`;
+		return axios.delete(url);
 	}
 }
 
