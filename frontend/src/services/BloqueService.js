@@ -10,6 +10,11 @@ class BloqueService {
 		return axios.get(url).then((response) => response.data);
 	}
 
+	getAsignacion_byBloque(bloqueid) {
+		const url = `${API_URL}/api/horario/asignacion_bloque/${bloqueid}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
 	getBloque(pk) {
 		const url = `${API_URL}/api/horario/bloque/${pk}`;
 		return axios.get(url).then((response) => response.data);

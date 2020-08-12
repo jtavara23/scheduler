@@ -35,7 +35,7 @@ class Bloque_CreateUpdate extends React.Component {
 		this.fecha_id = 0;
 		this.periodo_id = 0;
 		this.bloque_id = 0;
-
+		this.loadedCargaHora = 0;
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -54,7 +54,7 @@ class Bloque_CreateUpdate extends React.Component {
 				this.refs.curso.value = data.curso_nombre;
 				this.refs.aula.value = data.aula;
 				this.refs.horas.value = data.cargaHora;
-
+				this.loadedCargaHora = data.cargaHora;
 				if (c.data.nrc_t) this.refs.nrc_t.value = data.nrc_t;
 				else if (data.nrc_p) this.refs.nrc_p.value = data.nrc_p;
 				else this.refs.nrc_l.value = data.nrc_l;
@@ -179,13 +179,41 @@ class Bloque_CreateUpdate extends React.Component {
 					service
 						.updateAsignacion_Fecha({
 							// you can not change bloque or periodo in Asignacion (just fecha and profesor)
+							// API asignacion_bloque_get_update(request, bloque_id):
 							bloque: this.bloque_id,
 							fecha: fecha_id,
 							periodo: this.periodo_id
 						})
 						.then((result) => {
-							console.log(' Bloque Actualizado!!');
-							this.history.push('/');
+							service.getAsignacion_byBloque(this.bloque_id).then((res) => {
+								let bloques = res.data;
+								console.log(bloques);
+								const forLoop = async (_) => {
+									for (let index = 0; index < bloques.length; index++) {
+										let bloque = bloques[index];
+
+										// UPDATE CARGA PROFESOR
+										const profe_carga = await service.getHoraProfePeriodo(
+											bloque.periodo_id + '-' + bloque.profesor_id
+										);
+										let hpp_id = profe_carga.id;
+										let cargaTotal_profesor = profe_carga.carga;
+										cargaTotal_profesor =
+											cargaTotal_profesor + Number(this.refs.horas.value) - this.loadedCargaHora;
+
+										let res = await service.updateCargaProfesor({
+											id: hpp_id, // hora_profesor_periodo_id
+											carga: cargaTotal_profesor,
+											periodo: bloque.periodo_id,
+											profesor: bloque.profesor_id
+										});
+										console.log('updated carga of ', bloque.profesor_id, res);
+									}
+									console.log(' Bloque Actualizado!!');
+									this.history.push('/');
+								};
+								forLoop();
+							});
 						});
 				});
 		});
