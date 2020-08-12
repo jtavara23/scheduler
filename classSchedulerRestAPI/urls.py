@@ -28,6 +28,8 @@ urlpatterns = [
         view_principal.asignacion_get_delete),
     url(r'^api/horario/asignacion_bloque/(?P<bloque_id>[^\s]+)$',
         view_principal.asignacion_bloque_get_update),
+    url(r'^api/horario/asignacion_duplicate/(?P<asig_id>[^\s]+)$',
+        view_principal.asignacion_bloque_duplicate),
 
     url(r'^api/horario/bloque/$', view_principal.bloque_create),
     url(r'^api/horario/bloque/(?P<pk>[^\s]+)$',

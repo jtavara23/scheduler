@@ -18,6 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -78,19 +79,21 @@ const useToolbarStyles = makeStyles((theme) => ({
 	}
 }));
 
+const handleAsignarProfesor = (e, bloque) => {};
+
 const EnhancedTableToolbar = (props) => {
 	const classes = useToolbarStyles();
 	const { numSelected } = props;
-
+	//console.log(numSelected);
 	return (
 		<Toolbar
 			className={clsx(classes.root, {
-				[classes.highlight]: numSelected > 0
+				[classes.highlight]: numSelected.length > 0
 			})}
 		>
-			{numSelected > 0 ? (
+			{numSelected.length > 0 ? (
 				<Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-					{numSelected} seleccionado
+					{numSelected + '-'} seleccionado
 				</Typography>
 			) : (
 				<Typography className={classes.title} variant="h6" id="tableTitle" component="div">
@@ -98,10 +101,10 @@ const EnhancedTableToolbar = (props) => {
 				</Typography>
 			)}
 
-			{numSelected > 0 ? (
+			{numSelected.length > 0 ? (
 				<Tooltip title="Delete">
 					<IconButton aria-label="delete">
-						<DeleteIcon />
+						<DeleteIcon onClick={(e) => handleAsignarProfesor(e, numSelected[0])} />
 					</IconButton>
 				</Tooltip>
 			) : (
@@ -116,7 +119,7 @@ const EnhancedTableToolbar = (props) => {
 };
 
 EnhancedTableToolbar.propTypes = {
-	numSelected: PropTypes.number.isRequired
+	numSelected: PropTypes.object.isRequired
 };
 
 export default function MatPaginationTable() {
@@ -164,7 +167,9 @@ export default function MatPaginationTable() {
 		setSelected([]);
 	};
 
-	const handleClick = (event, name) => {
+	const handleClick = (event, bloque, index) => {
+		let name = bloque.asig_id;
+		//let name = bloque;
 		const selectedIndex = selected.indexOf(name);
 		let newSelected = [];
 
@@ -177,7 +182,6 @@ export default function MatPaginationTable() {
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
 		}
-
 		setSelected(newSelected);
 	};
 	const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -198,7 +202,7 @@ export default function MatPaginationTable() {
 						profesor: profesor_id
 					})
 					.then((result) => {
-						var newList = data.filter((obj) => obj.asig_id !== pk);
+						let newList = data.filter((obj) => obj.asig_id !== pk);
 						setData(newList);
 						console.log('we delete sucessfully ', result);
 					})
@@ -208,10 +212,43 @@ export default function MatPaginationTable() {
 			});
 		});
 	};
+	/*-------------------------------------    */
+	const handleDuplicate = (e, obj, index) => {
+		let newData = { ...obj };
+		service.createAsignacion_duplication(obj.asig_id).then((response) => {
+			let periodo_id = response.data.periodo;
+			let profesor_id = response.data.profesor;
+			let newasig = response.data.id;
+			service.getHoraProfePeriodo(periodo_id + '-' + profesor_id).then((response2) => {
+				let hpp_id = response2.id;
+				let cargaTotal_profesor = response2.carga;
+				cargaTotal_profesor = cargaTotal_profesor + obj.cargaHora;
+				service
+					.updateCargaProfesor({
+						id: hpp_id, // hora_profesor_periodo_id
+						carga: cargaTotal_profesor,
+						periodo: periodo_id,
+						profesor: profesor_id
+					})
+					.then((result) => {
+						let dataToAdd = [ ...data ];
+						newData.asig_id = newasig;
+						newData.profesor_id = 28;
+						newData.nombre = 'A_STAFF4';
+						dataToAdd.splice(index + 1, 0, newData);
+						setData(dataToAdd);
+						console.log('we duplicate sucessfully ', result);
+					})
+					.catch(() => {
+						console.log('no duplication has been done');
+					});
+			});
+		});
+	};
 
 	return (
 		<Paper className={classes.root}>
-			<EnhancedTableToolbar numSelected={selected.length} />
+			<EnhancedTableToolbar numSelected={selected} />
 			<TableContainer className={classes.container}>
 				<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
 					<TableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick}>
@@ -235,9 +272,13 @@ export default function MatPaginationTable() {
 						{data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((c, index) => {
 							const isItemSelected = isSelected(c.asig_id);
 							const labelId = `enhanced-table-checkbox-${index}`;
+							const index_inList = page * rowsPerPage + index;
 							return (
 								<StyledTableRow hover key={c.asig_id} selected={isItemSelected}>
-									<TableCell padding="checkbox" onClick={(event) => handleClick(event, c.asig_id)}>
+									<TableCell
+										padding="checkbox"
+										onClick={(event) => handleClick(event, c, index_inList)}
+									>
 										<Checkbox
 											checked={isItemSelected}
 											inputProps={{ 'aria-labelledby': labelId }}
@@ -267,6 +308,13 @@ export default function MatPaginationTable() {
 											<Tooltip title="ELIMINAR">
 												<IconButton aria-label="delete">
 													<DeleteIcon />
+												</IconButton>
+											</Tooltip>
+										</a>
+										<a onClick={(e) => handleDuplicate(e, c, index_inList)}>
+											<Tooltip title="DUPLICAR">
+												<IconButton aria-label="copy">
+													<FileCopyIcon />
 												</IconButton>
 											</Tooltip>
 										</a>

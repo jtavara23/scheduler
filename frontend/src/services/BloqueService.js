@@ -45,6 +45,10 @@ class BloqueService {
 		const url = `${API_URL}/api/horario/asignacion/`;
 		return axios.post(url, asignacion);
 	}
+	createAsignacion_duplication(asignacion_id) {
+		const url = `${API_URL}/api/horario/asignacion_duplicate/${asignacion_id}`;
+		return axios.post(url);
+	}
 
 	createBloque(bloque) {
 		const url = `${API_URL}/api/horario/bloque/`;

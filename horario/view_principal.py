@@ -129,3 +129,22 @@ def cargaTotal_profe_periodo(request, data):
     result = list(prof_periodo_cargaTotal.values())
     data = {'id': result[0]['id'], 'carga':  result[0]['carga']}
     return Response(data, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST'])
+def asignacion_bloque_duplicate(request, asig_id):
+    try:
+        asignacion = Asignacion.objects.get(pk=asig_id)
+    except Asignacion.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    profesor_28 = Profesor.objects.get(pk=28)
+    asignacion_new = Asignacion(
+        periodo=asignacion.periodo, profesor=profesor_28, bloque=asignacion.bloque, fecha=asignacion.fecha)
+    asignacion_new.save()
+    asignacion_json = asignacion_new.__dict__
+    print(asignacion_new.__dict__)
+    response = {'id': asignacion_json['id'],
+                'periodo': asignacion_json['periodo_id'],
+                'profesor': asignacion_json['profesor_id']}
+    return Response(response, status=status.HTTP_201_CREATED)
