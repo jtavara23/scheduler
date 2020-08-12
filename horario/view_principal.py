@@ -14,8 +14,7 @@ from .serializers import *
 @api_view(['GET'])
 def tabla_periodo(request, pk):
     cursor = connection.cursor()
-    statement = "call get_tabla_periodo("+pk+")"
-    cursor.execute(statement)
+    cursor.callproc('get_tabla_periodo', pk)
     results = dictfetchall(cursor)
     cursor.close()
 
@@ -68,6 +67,7 @@ def asignacion_create(request):
 
 @api_view(['GET', 'PUT'])
 def asignacion_get_update(request, pk):
+    # i think this will be never used!!!!
     try:
         asignacion = Asignacion.objects.get(pk=pk)
     except Asignacion.DoesNotExist:
@@ -100,7 +100,7 @@ def asignacion_bloque_get_update(request, bloque_id):
         results = []
         asignaciones = list(asignacion.values())
         for asig in asignaciones:
-            serializer = AsignacionSerializer(
+            serializer = AsignacionQuerySetSerializer(
                 asig, context={'request': request})
             results += [serializer.data]
         return Response({

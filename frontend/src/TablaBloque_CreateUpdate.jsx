@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import SaveIcon from '@material-ui/icons/Save';
+import { withRouter } from 'react-router-dom';
 import Service from './services/BloqueService';
 
 const service = new Service();
@@ -40,6 +41,8 @@ class Bloque_CreateUpdate extends React.Component {
 
 	componentDidMount() {
 		const { match: { params } } = this.props;
+		this.history = this.props.history;
+		//console.log(this.history);
 		if (params && params.pk) {
 			service.getBloque(params.pk).then((c) => {
 				let data = c.data;
@@ -141,6 +144,7 @@ class Bloque_CreateUpdate extends React.Component {
 
 								profesor_default_id = profesor_default_id + 1;
 							}
+							this.history.push('/');
 						};
 						forLoop();
 					})
@@ -181,6 +185,7 @@ class Bloque_CreateUpdate extends React.Component {
 						})
 						.then((result) => {
 							console.log(' Bloque Actualizado!!');
+							this.history.push('/');
 						});
 				});
 		});
@@ -229,4 +234,4 @@ class Bloque_CreateUpdate extends React.Component {
 	}
 }
 
-export default withStyles(useStyles)(Bloque_CreateUpdate);
+export default withStyles(useStyles)(withRouter(Bloque_CreateUpdate));

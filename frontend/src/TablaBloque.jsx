@@ -16,11 +16,13 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
+import { useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import Service from './services/BloqueService';
@@ -88,7 +90,7 @@ const EnhancedTableToolbar = (props) => {
 		>
 			{numSelected > 0 ? (
 				<Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-					{numSelected} selected
+					{numSelected} seleccionado
 				</Typography>
 			) : (
 				<Typography className={classes.title} variant="h6" id="tableTitle" component="div">
@@ -121,7 +123,7 @@ export default function MatPaginationTable() {
 	const classes = useStyles();
 	const [ page, setPage ] = React.useState(0);
 	const [ data, setData ] = useState([]);
-	const [ rowsPerPage, setRowsPerPage ] = React.useState(20);
+	const [ rowsPerPage, setRowsPerPage ] = React.useState(30);
 	const [ dense, setDense ] = React.useState(true);
 	const [ selected, setSelected ] = React.useState([]);
 
@@ -187,7 +189,7 @@ export default function MatPaginationTable() {
 	};
 	const isSelected = (name) => selected.indexOf(name) !== -1;
 	/*-------------------------------------    */
-
+	const history = useHistory();
 	return (
 		<Paper className={classes.root}>
 			<EnhancedTableToolbar numSelected={selected.length} />
@@ -239,8 +241,21 @@ export default function MatPaginationTable() {
 									<StyledTableCell align="center">{c.cargaHora}</StyledTableCell>
 									<StyledTableCell align="center">{c.nombre}</StyledTableCell>
 									<StyledTableCell>
-										<button onClick={(e) => handleDelete(e, c.asig_id)}> Delete</button>
-										<a href={'/bloque/' + c.bloque_id}> Update</a>
+										<a onClick={() => history.push('/bloque/' + c.bloque_id)}>
+											{' '}
+											<Tooltip title="EDITAR">
+												<IconButton aria-label="edit">
+													<EditIcon />
+												</IconButton>
+											</Tooltip>
+										</a>
+										<a onClick={(e) => handleDelete(e, c.asig_id)}>
+											<Tooltip title="ELIMINAR">
+												<IconButton aria-label="delete">
+													<DeleteIcon />
+												</IconButton>
+											</Tooltip>
+										</a>
 									</StyledTableCell>
 								</StyledTableRow>
 							);
@@ -254,7 +269,7 @@ export default function MatPaginationTable() {
 				</Table>
 			</TableContainer>
 			<TablePagination
-				rowsPerPageOptions={[ 10, 20, 50, { value: -1, label: 'All' } ]}
+				rowsPerPageOptions={[ 20, 30, 50, data.length ]}
 				component="div"
 				count={data.length}
 				rowsPerPage={rowsPerPage}
