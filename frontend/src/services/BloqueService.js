@@ -40,6 +40,11 @@ class BloqueService {
 		return axios.get(url).then((response) => response.data);
 	}
 
+	getProfesoresinPeriodo(per_id) {
+		const url = `${API_URL}/api/horario/profesores_periodo/${per_id}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
 	/**----------------------------------------------------- */
 	createAsignacion(asignacion) {
 		const url = `${API_URL}/api/horario/asignacion/`;

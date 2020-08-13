@@ -97,3 +97,11 @@ class TablaPeriodoSerializer(serializers.Serializer):
     cargaHora = serializers.IntegerField()
     profesor_id = serializers.IntegerField()
     nombre = serializers.CharField()
+
+
+class TablaProfesoresSerializer(serializers.Serializer):
+    id_profesor = serializers.IntegerField()
+    code_profesor = serializers.CharField()
+    nombre = serializers.CharField()
+    carga = serializers.IntegerField()
+    hpp_id = serializers.IntegerField()
