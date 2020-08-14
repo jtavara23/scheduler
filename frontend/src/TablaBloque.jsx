@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { withStyles, makeStyles, lighten } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -134,7 +134,10 @@ export default function MatPaginationTable() {
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(50);
 	const [ dense, setDense ] = React.useState(true);
 	const [ selected, setSelected ] = React.useState([]);
+	let profesoresEmpty = [ { value: '', display: '(Seleccionar Profesor)' } ];
+	const [ profesores, setProfesores ] = useState(profesoresEmpty);
 	const periodo_id = 5;
+
 	useEffect(() => {
 		const GetData = async () => {
 			service.getPeriodo(periodo_id).then((result) => {
@@ -163,11 +166,28 @@ export default function MatPaginationTable() {
 	};
 
 	/*-------------------------------------    */
-	const childRef = useRef();
-
 	const loadProfesores = (e, bloque) => {
-		if (e) childRef.current.loadAvaliableProf();
-		else childRef.current.cleanDropdown();
+		if (e) {
+			service
+				.getProfesores_available({
+					periodo: periodo_id,
+					dia_fecha: bloque.dia_fecha,
+					hora_ini: bloque.hora_ini,
+					hora_fin: bloque.hora_fin
+				})
+				.then((result) => {
+					let profesoresFromApi = result.data.map((prof) => {
+						return { value: prof.id_prof, display: prof.nombre_prof + '-' + prof.code_prof };
+					});
+					//console.log('profesoresFromApi ', profesoresFromApi);
+					setProfesores(profesoresFromApi);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		} else {
+			setProfesores(profesoresEmpty);
+		}
 	};
 
 	const handleClick = (event, bloque, index) => {
@@ -370,7 +390,7 @@ export default function MatPaginationTable() {
 			</Grid>
 			<Grid item xs={2.5}>
 				<Paper>
-					<SelectProfesor ref={childRef} id_asig={selected} />
+					<SelectProfesor id_asig={profesores} />
 				</Paper>
 				<Paper className={classes.paper}>
 					<TablaProfesor />
