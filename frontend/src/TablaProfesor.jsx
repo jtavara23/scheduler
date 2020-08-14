@@ -8,10 +8,20 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
 
 const service = new Service();
 
 const TablaBloqueStyled = styled.div`maxHeight: 26px;`;
+
+const useStyles = (theme) => ({
+	root: {
+		'margin-top': '5em'
+	},
+	container: {
+		maxHeight: 790
+	}
+});
 
 class TablaProfesores extends Component {
 	constructor(props) {
@@ -19,6 +29,7 @@ class TablaProfesores extends Component {
 		this.state = {
 			data_rows: []
 		};
+		this.classes = useStyles();
 	}
 
 	/* A. lifecycle meTableCellod of TableCelle component TableCellat is called when TableCelle component is created and inserted into TableCelle DOM    */
@@ -31,9 +42,10 @@ class TablaProfesores extends Component {
 		});
 	}
 	render() {
+		const { classes } = this.props;
 		return (
-			<TablaBloqueStyled>
-				<TableContainer component={Paper}>
+			<TablaBloqueStyled className={classes.root}>
+				<TableContainer component={Paper} className={classes.container}>
 					<Table stickyHeader aria-label="sticky table">
 						<TableHead>
 							<TableRow>
@@ -58,4 +70,4 @@ class TablaProfesores extends Component {
 	}
 }
 
-export default TablaProfesores;
+export default withStyles(useStyles)(TablaProfesores);

@@ -32,12 +32,7 @@ import Service from './services/BloqueService';
 const service = new Service();
 
 const useStyles = makeStyles((theme) => ({
-	root: {
-		'margin-top': '3em',
-		'padding-bottom': '3em',
-		'margin-left': '2em',
-		flexGrow: 1
-	},
+	root: {},
 	container: {
 		maxHeight: 756
 	},
