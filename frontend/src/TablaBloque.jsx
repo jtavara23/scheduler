@@ -27,12 +27,14 @@ import Grid from '@material-ui/core/Grid';
 
 import { useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+
 import TablaProfesor from './TablaProfesor';
+import SelectProfesor from './SelectProfesor';
 import Service from './services/BloqueService';
 const service = new Service();
 
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { flexGrow: 1 },
 	container: {
 		maxHeight: 756
 	},
@@ -252,108 +254,122 @@ export default function MatPaginationTable() {
 	return (
 		<Grid container className={classes.root}>
 			<Grid item xs={10}>
-				<Paper className={classes.paper}>
-					<EnhancedTableToolbar numSelected={selected} />
-					<TableContainer className={classes.container}>
-						<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
-							<TableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick}>
-								<TableRow>
-									<StyledTableCell>■</StyledTableCell>
-									<StyledTableCell>Escuela</StyledTableCell>
-									<StyledTableCell>Curso</StyledTableCell>
-									<StyledTableCell align="center">NRC_T</StyledTableCell>
-									<StyledTableCell align="center">NRC_P</StyledTableCell>
-									<StyledTableCell align="center">NRC_L</StyledTableCell>
-									<StyledTableCell align="center">Aula</StyledTableCell>
-									<StyledTableCell align="center">Dia</StyledTableCell>
-									<StyledTableCell align="center">Hora INI</StyledTableCell>
-									<StyledTableCell align="center">Hora FIN</StyledTableCell>
-									<StyledTableCell align="center">CargaHor</StyledTableCell>
-									<StyledTableCell align="center">Profesor</StyledTableCell>
-									<StyledTableCell align="center">Acciones</StyledTableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((c, index) => {
-									const isItemSelected = isSelected(c.asig_id);
-									const labelId = `enhanced-table-checkbox-${index}`;
-									const index_inList = page * rowsPerPage + index;
-									return (
-										<StyledTableRow hover key={c.asig_id} selected={isItemSelected}>
-											<TableCell
-												padding="checkbox"
-												onClick={(event) => handleClick(event, c, index_inList)}
-											>
-												<Checkbox
-													checked={isItemSelected}
-													inputProps={{ 'aria-labelledby': labelId }}
-												/>
-											</TableCell>
-											<StyledTableCell>{c.escuela_nombre_id} </StyledTableCell>
-											<StyledTableCell>{c.curso_nombre_id}</StyledTableCell>
-											<StyledTableCell align="center">{c.nrc_t}</StyledTableCell>
-											<StyledTableCell align="center">{c.nrc_p}</StyledTableCell>
-											<StyledTableCell align="center">{c.nrc_l}</StyledTableCell>
-											<StyledTableCell align="center">{c.aula}</StyledTableCell>
-											<StyledTableCell align="center">{c.dia_fecha}</StyledTableCell>
-											<StyledTableCell align="center">{c.hora_ini}</StyledTableCell>
-											<StyledTableCell align="center">{c.hora_fin}</StyledTableCell>
-											<StyledTableCell align="center">{c.cargaHora}</StyledTableCell>
-											<StyledTableCell align="center">{c.nombre}</StyledTableCell>
-											<StyledTableCell>
-												<a onClick={() => history.push('/bloque/' + c.bloque_id)}>
-													{' '}
-													<Tooltip title="EDITAR">
-														<IconButton aria-label="edit">
-															<EditIcon />
-														</IconButton>
-													</Tooltip>
-												</a>
-												<a
-													onClick={(e) =>
-														handleDelete(e, c.asig_id, c.cargaHora, c.profesor_id)}
-												>
-													<Tooltip title="ELIMINAR">
-														<IconButton aria-label="delete">
-															<DeleteIcon />
-														</IconButton>
-													</Tooltip>
-												</a>
-												<a onClick={(e) => handleDuplicate(e, c, index_inList)}>
-													<Tooltip title="DUPLICAR">
-														<IconButton aria-label="copy">
-															<FileCopyIcon />
-														</IconButton>
-													</Tooltip>
-												</a>
-											</StyledTableCell>
-										</StyledTableRow>
-									);
-								})}
-								{emptyRows > 0 && (
-									<TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-										<TableCell colSpan={12} />
+				<Grid>
+					<Paper className={classes.paper}>
+						<EnhancedTableToolbar numSelected={selected} />
+						<TableContainer className={classes.container}>
+							<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
+								<TableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick}>
+									<TableRow>
+										<StyledTableCell>■</StyledTableCell>
+										<StyledTableCell>Escuela</StyledTableCell>
+										<StyledTableCell>Curso</StyledTableCell>
+										<StyledTableCell align="center">NRC_T</StyledTableCell>
+										<StyledTableCell align="center">NRC_P</StyledTableCell>
+										<StyledTableCell align="center">NRC_L</StyledTableCell>
+										<StyledTableCell align="center">Aula</StyledTableCell>
+										<StyledTableCell align="center">Dia</StyledTableCell>
+										<StyledTableCell align="center">Hora INI</StyledTableCell>
+										<StyledTableCell align="center">Hora FIN</StyledTableCell>
+										<StyledTableCell align="center">CargaHor</StyledTableCell>
+										<StyledTableCell align="center">Profesor</StyledTableCell>
+										<StyledTableCell align="center">Acciones</StyledTableCell>
 									</TableRow>
-								)}
-							</TableBody>
-						</Table>
-					</TableContainer>
-					<TablePagination
-						rowsPerPageOptions={[ 30, 50, 80, data.length ]}
-						component="div"
-						count={data.length}
-						rowsPerPage={rowsPerPage}
-						page={page}
-						onChangePage={handleChangePage}
-						onChangeRowsPerPage={handleChangeRowsPerPage}
-					/>
-					<FormControlLabel
-						control={<Switch checked={dense} onChange={handleChangeDense} />}
-						label="Dense padding"
-					/>
-				</Paper>
+								</TableHead>
+								<TableBody>
+									{data
+										.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+										.map((c, index) => {
+											const isItemSelected = isSelected(c.asig_id);
+											const labelId = `enhanced-table-checkbox-${index}`;
+											const index_inList = page * rowsPerPage + index;
+											return (
+												<StyledTableRow hover key={c.asig_id} selected={isItemSelected}>
+													<TableCell
+														padding="checkbox"
+														onClick={(event) => handleClick(event, c, index_inList)}
+													>
+														<Checkbox
+															checked={isItemSelected}
+															inputProps={{ 'aria-labelledby': labelId }}
+														/>
+													</TableCell>
+													<StyledTableCell>{c.escuela_nombre_id} </StyledTableCell>
+													<StyledTableCell>{c.curso_nombre_id}</StyledTableCell>
+													<StyledTableCell align="center">{c.nrc_t}</StyledTableCell>
+													<StyledTableCell align="center">{c.nrc_p}</StyledTableCell>
+													<StyledTableCell align="center">{c.nrc_l}</StyledTableCell>
+													<StyledTableCell align="center">{c.aula}</StyledTableCell>
+													<StyledTableCell align="center">{c.dia_fecha}</StyledTableCell>
+													<StyledTableCell align="center">{c.hora_ini}</StyledTableCell>
+													<StyledTableCell align="center">{c.hora_fin}</StyledTableCell>
+													<StyledTableCell align="center">{c.cargaHora}</StyledTableCell>
+													<StyledTableCell align="center">{c.nombre}</StyledTableCell>
+													<StyledTableCell>
+														<a onClick={() => history.push('/bloque/' + c.bloque_id)}>
+															{' '}
+															<Tooltip title="EDITAR">
+																<IconButton aria-label="edit">
+																	<EditIcon />
+																</IconButton>
+															</Tooltip>
+														</a>
+														<a
+															onClick={(e) =>
+																handleDelete(e, c.asig_id, c.cargaHora, c.profesor_id)}
+														>
+															<Tooltip title="ELIMINAR">
+																<IconButton aria-label="delete">
+																	<DeleteIcon />
+																</IconButton>
+															</Tooltip>
+														</a>
+														<a onClick={(e) => handleDuplicate(e, c, index_inList)}>
+															<Tooltip title="DUPLICAR">
+																<IconButton aria-label="copy">
+																	<FileCopyIcon />
+																</IconButton>
+															</Tooltip>
+														</a>
+													</StyledTableCell>
+												</StyledTableRow>
+											);
+										})}
+									{emptyRows > 0 && (
+										<TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+											<TableCell colSpan={12} />
+										</TableRow>
+									)}
+								</TableBody>
+							</Table>
+						</TableContainer>
+					</Paper>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item xs>
+						<FormControlLabel
+							control={<Switch checked={dense} onChange={handleChangeDense} />}
+							label="Dense padding"
+						/>
+					</Grid>
+					<Grid item xs>
+						<TablePagination
+							/* 	style={{ display: 'flex' }} */
+							rowsPerPageOptions={[ 30, 50, 80, data.length ]}
+							component="div"
+							count={data.length}
+							rowsPerPage={rowsPerPage}
+							page={page}
+							onChangePage={handleChangePage}
+							onChangeRowsPerPage={handleChangeRowsPerPage}
+						/>
+					</Grid>
+				</Grid>
 			</Grid>
 			<Grid item xs={2}>
+				<Paper>
+					<SelectProfesor />
+				</Paper>
 				<Paper className={classes.paper}>
 					<TablaProfesor />
 				</Paper>
