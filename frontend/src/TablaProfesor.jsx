@@ -16,7 +16,10 @@ const TablaBloqueStyled = styled.div`maxHeight: 26px;`;
 
 const useStyles = (theme) => ({
 	root: {
-		'margin-top': '5em'
+		'margin-top': '1em',
+		display: 'block',
+		'margin-left': 'auto',
+		'margin-right': 'auto'
 	},
 	container: {
 		maxHeight: 790
@@ -57,9 +60,9 @@ class TablaProfesores extends Component {
 						<TableBody>
 							{this.state.data_rows.map((c) => (
 								<TableRow key={c.hpp_id}>
-									<TableCell>{c.code_profesor} </TableCell>
-									<TableCell>{c.nombre}</TableCell>
-									<TableCell>{c.carga}</TableCell>
+									<TableCell size="small">{c.code_profesor} </TableCell>
+									<TableCell size="small">{c.nombre}</TableCell>
+									<TableCell size="small">{c.carga}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>

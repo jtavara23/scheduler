@@ -252,8 +252,8 @@ export default function MatPaginationTable() {
 	};
 
 	return (
-		<Grid container className={classes.root}>
-			<Grid item xs={10}>
+		<Grid container className={classes.root} spacing={3}>
+			<Grid item xs={9.5}>
 				<Grid>
 					<Paper className={classes.paper}>
 						<EnhancedTableToolbar numSelected={selected} />
@@ -366,7 +366,7 @@ export default function MatPaginationTable() {
 					</Grid>
 				</Grid>
 			</Grid>
-			<Grid item xs={2}>
+			<Grid item xs={2.5}>
 				<Paper>
 					<SelectProfesor />
 				</Paper>
