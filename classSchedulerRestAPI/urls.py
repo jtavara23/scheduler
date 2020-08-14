@@ -61,6 +61,8 @@ urlpatterns = [
     url(r'^api/horario/periodos/(?P<id>[^\s]+)$', view_periodo.periodo_detail),
 
     url(r'^api/horario/profesor/$', view_profesor.profesor_list),
+    url(r'^api/horario/profesor_available/$',
+        view_profesor.get_available_teachers),
     url(r'^api/horario/profesor/(?P<id>[^\s]+)$',  # id_profesor
         view_profesor.profesor_detail),
     url(r'^api/horario/profesores_periodo/(?P<id_per>[^\s]+)$',  # id_profesor

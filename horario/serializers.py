@@ -105,3 +105,9 @@ class TablaProfesoresSerializer(serializers.Serializer):
     nombre = serializers.CharField()
     carga = serializers.IntegerField()
     hpp_id = serializers.IntegerField()
+
+
+class AvailableProfesoresSerializer(serializers.Serializer):
+    nombre_prof = serializers.CharField()
+    code_prof = serializers.CharField()
+    id_prof = serializers.IntegerField()

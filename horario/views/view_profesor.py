@@ -5,7 +5,7 @@ from rest_framework import status
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import connection
 from ..models import Profesor
-from ..serializers import ProfesorSerializer, TablaProfesoresSerializer, dictfetchall
+from ..serializers import ProfesorSerializer, TablaProfesoresSerializer, dictfetchall, AvailableProfesoresSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -90,3 +90,22 @@ def profesor_detail(request, id):
     elif request.method == 'DELETE':
         profesor.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def get_available_teachers(request):
+    Xperiodo = request.data['periodo']
+    Xdia = request.data['dia_fecha']
+    Xhora_ini = request.data['hora_ini']
+    Xhora_fin = request.data['hora_fin']
+    cursor = connection.cursor()
+    cursor.callproc('get_available_profesores', [
+                    Xperiodo, Xdia, Xhora_ini, Xhora_fin])
+    results = dictfetchall(cursor)
+    cursor.close()
+
+    serializer = AvailableProfesoresSerializer(
+        results, context={'request': request}, many=True)
+    return Response({
+        'data': serializer.data
+    })
