@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { withStyles, makeStyles, lighten } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -163,33 +163,35 @@ export default function MatPaginationTable() {
 	};
 
 	/*-------------------------------------    */
-	const handleSelectAllClick = (event) => {
-		if (event.target.checked) {
-			const newSelecteds = data.map((n) => n.name);
-			setSelected(newSelecteds);
-			return;
-		}
-		setSelected([]);
+	const childRef = useRef();
+
+	const loadProfesores = (e, bloque) => {
+		if (e) childRef.current.loadAvaliableProf();
+		else childRef.current.cleanDropdown();
 	};
 
 	const handleClick = (event, bloque, index) => {
-		let name = bloque.asig_id;
-		//let name = bloque;
-		const selectedIndex = selected.indexOf(name);
+		let asignacionSeleccionada = bloque.asig_id;
+		const selectedIndex = selected.indexOf(asignacionSeleccionada);
 		let newSelected = [];
 
 		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, name);
+			//select from checkbox
+			newSelected = newSelected.concat(selected, asignacionSeleccionada);
+			loadProfesores(true, bloque);
 		} else if (selectedIndex === 0) {
+			//unselect from checkbox
 			newSelected = newSelected.concat(selected.slice(1));
+			loadProfesores(false, bloque);
 		} else if (selectedIndex === selected.length - 1) {
 			newSelected = newSelected.concat(selected.slice(0, -1));
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
 		}
+		console.log('main ', asignacionSeleccionada);
 		setSelected(newSelected);
 	};
-	const isSelected = (name) => selected.indexOf(name) !== -1;
+	const isSelected = (asignacionSeleccionada) => selected.indexOf(asignacionSeleccionada) !== -1;
 	/*-------------------------------------    */
 	const history = useHistory();
 	/*-------------------------------------    */
@@ -259,7 +261,7 @@ export default function MatPaginationTable() {
 						<EnhancedTableToolbar numSelected={selected} />
 						<TableContainer className={classes.container}>
 							<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
-								<TableHead numSelected={selected.length} onSelectAllClick={handleSelectAllClick}>
+								<TableHead numSelected={selected.length}>
 									<TableRow>
 										<StyledTableCell>■</StyledTableCell>
 										<StyledTableCell>Escuela</StyledTableCell>
@@ -368,7 +370,7 @@ export default function MatPaginationTable() {
 			</Grid>
 			<Grid item xs={2.5}>
 				<Paper>
-					<SelectProfesor />
+					<SelectProfesor ref={childRef} id_asig={selected} />
 				</Paper>
 				<Paper className={classes.paper}>
 					<TablaProfesor />
