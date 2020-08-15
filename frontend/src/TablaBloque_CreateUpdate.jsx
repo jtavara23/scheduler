@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import SaveIcon from '@material-ui/icons/Save';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import { withRouter } from 'react-router-dom';
 import Service from './services/BloqueService';
 
 const service = new Service();
 
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
 			margin: theme.spacing(2),
@@ -18,7 +20,7 @@ const useStyles = (theme) => ({
 	button: {
 		margin: theme.spacing(4)
 	}
-});
+}));
 
 function createJsonFecha(param) {
 	let data = param.split('-');
@@ -29,60 +31,79 @@ function createJsonFecha(param) {
 	};
 }
 
-class Bloque_CreateUpdate extends React.Component {
-	constructor(props) {
-		super(props);
-		this.fecha_id = 0;
-		this.periodo_id = 0;
-		this.bloque_id = 0;
-		this.loadedCargaHora = 0;
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
+const Bloque_CreateUpdate = (props) => {
+	const classes = useStyles();
+	const [ bloque_id, setBloque_id ] = useState(0);
+	const [ fecha_id, setFecha_id ] = useState(0);
+	const [ periodo_id, setPeriodo_id ] = useState(0);
+	const [ escuela, setEscuela ] = useState([ { value: '', display: '(Seleccionar Escuela)' } ]);
+	const [ selectedEscuela, setSelectedEscuela ] = useState('');
+	const [ curso, setCurso ] = useState([ { value: '', display: '(Seleccionar Curso)' } ]);
+	const [ selectedCurso, setSelectedCurso ] = useState('');
+	const [ aula, setAula ] = useState('');
+	const [ cargaHora, setCargaHora ] = useState(0);
+	const [ nrc_t, setnrc_t ] = useState('');
+	const [ nrc_p, setnrc_p ] = useState('');
+	const [ nrc_l, setnrc_l ] = useState('');
+	const [ dia, setDia ] = useState('');
+	const [ hora_ini, setHora_ini ] = useState('');
+	const [ hora_fin, setHora_fin ] = useState('');
+	const [ history, setHistory ] = useState('');
 
-	componentDidMount() {
-		const { match: { params } } = this.props;
-		this.history = this.props.history;
-		//console.log(this.history);
+	const { match: { params } } = props;
+
+	useEffect(() => {
+		setHistory(props.history);
+		console.log('use effect params ', params);
+		service.getEscuelas().then((result) => {
+			let escuelasFromApi = result.data.map((esc) => {
+				return { value: esc.nombre, display: esc.nombre };
+			});
+			//console.log('profesoresFromApi ', escuelasFromApi);
+			setEscuela(escuelasFromApi);
+		});
+
 		if (params && params.pk) {
 			service.getBloque(params.pk).then((c) => {
 				let data = c.data;
-				this.bloque_id = data.id;
-				this.fecha_id = data.fecha;
-				this.periodo_id = data.periodo;
+				setBloque_id(data.id);
+				setFecha_id(data.fecha);
+				setPeriodo_id(data.periodo);
 
-				this.refs.escuela.value = data.escuela_nombre;
-				this.refs.curso.value = data.curso_nombre;
-				this.refs.aula.value = data.aula;
-				this.refs.horas.value = data.cargaHora;
-				this.loadedCargaHora = data.cargaHora;
-				if (c.data.nrc_t) this.refs.nrc_t.value = data.nrc_t;
-				else if (data.nrc_p) this.refs.nrc_p.value = data.nrc_p;
-				else this.refs.nrc_l.value = data.nrc_l;
+				setSelectedEscuela(data.escuela_nombre);
+				setSelectedCurso(data.curso_nombre);
+				setAula(data.aula);
+				setCargaHora(data.cargaHora);
+				if (c.data.nrc_t) setnrc_t(data.nrc_t);
+				else if (data.nrc_p) setnrc_p(data.nrc_p);
+				else setnrc_l(data.nrc_l);
 
 				let fecha_id = data.fecha;
 				service.getFecha(fecha_id).then((f) => {
 					if (f) {
-						this.refs.dia.value = f.dia_fecha;
-						this.refs.hora_ini.value = f.hora_ini;
-						this.refs.hora_fin.value = f.hora_fin;
+						setDia(f.dia_fecha);
+						setHora_ini(f.hora_ini);
+						setHora_fin(f.hora_fin);
 					} else console.log('No fecha id');
 				});
 			});
-			this.refs.boton.value = 'Editar';
+			//this.refs.boton.value = 'Editar';
 		}
-	}
+	}, []);
 
-	handleSubmit(event) {
-		const { match: { params } } = this.props;
-		if (params && params.pk) {
+	//console.log(this.history);
+
+	const handleSubmit = (event) => {
+		const { match: { params } } = props;
+		/* if (params && params.pk) {
 			this.handleUpdate(params.pk);
 		} else {
 			this.handleCreate();
-		}
+		} */
 		event.preventDefault();
-	}
+	};
 
-	handleCreate() {
+	const handleCreate = () => {
 		let param = this.refs.dia.value + '-' + this.refs.hora_ini.value + '-' + this.refs.hora_fin.value;
 		let fecha_id = 0;
 		let bloque_id = 0;
@@ -155,9 +176,9 @@ class Bloque_CreateUpdate extends React.Component {
 			.catch(() => {
 				alert('There was an error! Creating a fecha');
 			});
-	}
+	};
 
-	handleUpdate(pk) {
+	const handleUpdate = (pk) => {
 		let param = this.refs.dia.value + '-' + this.refs.hora_ini.value + '-' + this.refs.hora_fin.value;
 
 		service.updateFecha(createJsonFecha(param)).then((result) => {
@@ -217,49 +238,68 @@ class Bloque_CreateUpdate extends React.Component {
 						});
 				});
 		});
-	}
+	};
 
-	render() {
-		const { classes } = this.props;
-		return (
-			<form onSubmit={this.handleSubmit}>
-				<div className="form-group">
-					<label>Escuela:</label>
-					<input className="form-control" type="text" ref="escuela" />
+	return (
+		<form className={classes.root} noValidate autoComplete="off">
+			<Select
+				labelId="seleccionar-escuela"
+				id="selec-escuela"
+				value={selectedEscuela}
+				onChange={(e) => setSelectedEscuela(e.target.value)}
+			>
+				{escuela.map((esc) => (
+					<MenuItem value={esc.value} key={esc.value}>
+						{esc.display}
+					</MenuItem>
+				))}
+			</Select>
 
-					<label> curso:</label>
-					<input className="form-control" type="text" ref="curso" />
+			<TextField
+				name="curso"
+				label="Curso"
+				value={selectedCurso}
+				onChange={(e) => setSelectedCurso(e.target.value)}
+			/>
 
-					<label>aula</label>
-					<input className="form-control" type="text" ref="aula" />
+			<TextField name="nrc_t" label="NRC_T" value={nrc_t} onChange={(e) => setnrc_t(e.target.value)} />
+			<TextField name="nrc_p" label="NRC_P" value={nrc_p} onChange={(e) => setnrc_p(e.target.value)} />
+			<TextField name="nrc_l" label="NRC_L" value={nrc_l} onChange={(e) => setnrc_l(e.target.value)} />
 
-					<label>nrc_t:</label>
-					<input className="form-control" type="text" ref="nrc_t" />
-					<label>nrc_p:</label>
-					<input className="form-control" type="text" ref="nrc_p" />
-					<label>nrc_l:</label>
-					<input className="form-control" type="text" ref="nrc_l" />
+			<TextField name="aula" label="Aula" value={aula} onChange={(e) => setAula(e.target.value)} />
 
-					<label>horas:</label>
-					<input className="form-control" type="text" ref="horas" />
+			<TextField
+				name="cargaHora"
+				label="Carga Horaria"
+				value={cargaHora}
+				onChange={(e) => setCargaHora(e.target.value)}
+			/>
 
-					<label>Nro de Profesores:</label>
-					<input className="form-control" type="text" ref="nroProfesores" />
+			<TextField name="dia" label="DIA" value={dia} onChange={(e) => setDia(e.target.value)} />
+			<TextField
+				name="hora_ini"
+				label="HORA_INI"
+				value={hora_ini}
+				onChange={(e) => setHora_ini(e.target.value)}
+			/>
+			<TextField
+				name="hora_fin"
+				label="HORA_FIN"
+				value={hora_fin}
+				onChange={(e) => setHora_fin(e.target.value)}
+			/>
 
-					<label>Dia:</label>
-					<input className="form-control" type="text" ref="dia" />
-
-					<label>Hora Ini:</label>
-					<input className="form-control" type="text" ref="hora_ini" />
-
-					<label>Hora fin</label>
-					<input className="form-control" type="text" ref="hora_fin" />
-
-					<input className="btn btn-primary" type="submit" ref="boton" value="Crear" />
-				</div>
-			</form>
-		);
-	}
-}
+			<Button
+				className={classes.button}
+				color="primary"
+				startIcon={<SaveIcon />}
+				variant="outlined"
+				onClick={(e) => handleSubmit(e)}
+			>
+				Agregar
+			</Button>
+		</form>
+	);
+};
 
 export default withStyles(useStyles)(withRouter(Bloque_CreateUpdate));

@@ -26,7 +26,7 @@ class BloqueService {
 	}
 
 	getEscuelas() {
-		const url = `${API_URL}/api/horario//escuela/`;
+		const url = `${API_URL}/api/horario/escuela/`;
 		return axios.get(url).then((response) => response.data);
 	}
 
