@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 const service = new Service();
 
 const useStyles = makeStyles((theme) => ({
@@ -25,11 +25,22 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const StyledTableRow = withStyles((theme) => ({
+	/*	root: {
+		'&:nth-of-type(odd)': {
+			backgroundColor: theme.palette.action.hover
+		}
+	}*/
+}))(TableRow);
+
 export default function TablaProfesores(props) {
 	const [ data_rows, setData_rows ] = useState([]);
+	const [ selected, setSelected ] = React.useState([]);
+	const [ history, setHistory ] = useState('');
 
 	useEffect(
 		() => {
+			setHistory(props.hist);
 			service.getProfesoresinPeriodo(5).then((result) => {
 				setData_rows(result.data);
 			});
@@ -38,6 +49,33 @@ export default function TablaProfesores(props) {
 	);
 
 	const classes = useStyles();
+
+	const isSelected = (profesorSeleccionado) => selected.indexOf(profesorSeleccionado) !== -1;
+
+	const handleClick = (event, profesorID) => {
+		const selectedIndex = selected.indexOf(profesorID);
+		let newSelected = [];
+
+		if (selectedIndex === -1) {
+			//select from row
+			newSelected = newSelected.concat(selected, profesorID);
+		} else if (selectedIndex === 0) {
+			//unselect from row
+			newSelected = newSelected.concat(selected.slice(1));
+		} else if (selectedIndex === selected.length - 1) {
+			newSelected = newSelected.concat(selected.slice(0, -1));
+		} else if (selectedIndex > 0) {
+			newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+		}
+		//console.log('profesorID ', profesorID);
+		setSelected(newSelected);
+	};
+
+	const goToViewHorario = (e) => {
+		//console.log('Profe, sele ', selected[0]);
+		history.push('/bloque/view_horario/' + selected[0]);
+	};
+
 	return (
 		<Paper className={classes.root}>
 			<TableContainer className={classes.container}>
@@ -50,18 +88,33 @@ export default function TablaProfesores(props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{data_rows.map((c) => (
-							<TableRow key={c.hpp_id}>
-								<TableCell size="small">{c.code_profesor} </TableCell>
-								<TableCell size="small">{c.nombre}</TableCell>
-								<TableCell size="small">{c.carga}</TableCell>
-							</TableRow>
-						))}
+						{data_rows.map((c) => {
+							const isItemSelected = isSelected(c.id_profesor);
+
+							return (
+								<TableRow
+									key={c.hpp_id}
+									hover
+									selected={isItemSelected}
+									onClick={(event) => handleClick(event, c.id_profesor)}
+								>
+									<TableCell size="small">{c.code_profesor} </TableCell>
+									<TableCell size="small">{c.nombre}</TableCell>
+									<TableCell size="small">{c.carga}</TableCell>
+								</TableRow>
+							);
+						})}
 					</TableBody>
 				</Table>
 			</TableContainer>
 			<TableContainer className={classes.boton}>
-				<Fab variant="extended" size="small" color="primary" aria-label="add">
+				<Fab
+					variant="extended"
+					size="small"
+					color="primary"
+					aria-label="add"
+					onClick={(e) => goToViewHorario(e)}
+				>
 					<VisibilityIcon />
 					Ver Horario
 				</Fab>

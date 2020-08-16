@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom';
 import './App.css';
 import TablaBloque from './TablaBloque';
 import TablaBloque_CreateUpdate from './TablaBloque_CreateUpdate';
+import ViewHorario from './ViewHorario';
 
 const BaseLayout = () => (
 	<div className="container-fluid">
@@ -37,6 +38,7 @@ const BaseLayout = () => (
 			<Route path="/" exact component={TablaBloque} />
 			<Route path="/bloque/" exact component={TablaBloque_CreateUpdate} />
 			<Route path="/bloque/:pk" exact component={TablaBloque_CreateUpdate} />
+			<Route path="/bloque/view_horario/:profId" exact component={ViewHorario} />
 		</div>
 	</div>
 );

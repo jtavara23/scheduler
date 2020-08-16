@@ -390,7 +390,7 @@ export default function MatPaginationTable() {
 			</Grid>
 			<Grid item xs={2}>
 				<Paper className={classes.container}>
-					<TablaProfesor data_bloque={data} />
+					<TablaProfesor data_bloque={data} hist={history} />
 				</Paper>
 			</Grid>
 		</Grid>
