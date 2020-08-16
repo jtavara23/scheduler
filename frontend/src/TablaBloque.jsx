@@ -283,7 +283,7 @@ export default function MatPaginationTable() {
 							<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
 								<TableHead numSelected={selected.length}>
 									<TableRow>
-										<StyledTableCell>■</StyledTableCell>
+										<StyledTableCell>■■</StyledTableCell>
 										<StyledTableCell>Escuela</StyledTableCell>
 										<StyledTableCell>Curso</StyledTableCell>
 										<StyledTableCell align="center">NRC_T</StyledTableCell>
@@ -390,7 +390,7 @@ export default function MatPaginationTable() {
 			</Grid>
 			<Grid item xs={2.5}>
 				<Paper>
-					<SelectProfesor id_asig={profesores} />
+					<SelectProfesor listProfesores={profesores} />
 				</Paper>
 				<Paper className={classes.paper}>
 					<TablaProfesor />

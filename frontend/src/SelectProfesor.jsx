@@ -17,9 +17,9 @@ const SelectProfesor = (props) => {
 	useEffect(
 		() => {
 			//console.log('child', props.id_asig);
-			setProfesores(props.id_asig);
+			setProfesores(props.listProfesores);
 		},
-		[ props.id_asig ]
+		[ props.listProfesores ]
 	);
 
 	return (
