@@ -235,7 +235,7 @@ const Bloque_CreateUpdate = (props) => {
 				})
 				.then((response) => {
 					service
-						.updateAsignacion_Fecha({
+						.updateAsignacionFecha({
 							// you can not change bloque or periodo in Asignacion (just fecha and profesor)
 							// API asignacion_bloque_get_update(request, bloque_id):
 							bloque: bloque_id,

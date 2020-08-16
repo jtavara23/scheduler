@@ -90,8 +90,8 @@ const handleAsignarProfesor = (e, bloque) => {};
 
 const EnhancedTableToolbar = (props) => {
 	const classes = useToolbarStyles();
-	const { numSelected, profesoresToShow, nombre_periodo } = props;
-	//console.log(numSelected);
+	const { numSelected, prof, carga, profesoresToShow, nombre_periodo } = props;
+	//console.log('numSelected ', numSelected);
 	return (
 		<Toolbar
 			className={clsx(classes.root, {
@@ -107,7 +107,13 @@ const EnhancedTableToolbar = (props) => {
 			)}
 
 			{numSelected.length > 0 ? (
-				<SelectProfesor listProfesores={profesoresToShow} />
+				<SelectProfesor
+					listProfesores={profesoresToShow}
+					id_asignacion={numSelected[0]}
+					id_profesor={prof}
+					horas={carga}
+					id_periodo={nombre_periodo}
+				/>
 			) : (
 				<Tooltip title="Filter list">
 					<IconButton aria-label="filter list">
@@ -132,6 +138,8 @@ export default function MatPaginationTable() {
 	const [ selected, setSelected ] = React.useState([]);
 	let profesoresEmpty = [ { value: '', display: '(Seleccionar Profesor)' } ];
 	const [ profesores, setProfesores ] = useState(profesoresEmpty);
+	const [ profesorSelected, setProfesorSelected ] = useState('');
+	const [ cargaSelected, setCargaSelected ] = useState(0);
 	const periodo_id = 5;
 
 	useEffect(() => {
@@ -188,6 +196,8 @@ export default function MatPaginationTable() {
 
 	const handleClick = (event, bloque, index) => {
 		let asignacionSeleccionada = bloque.asig_id;
+		let profId = Number(bloque.profesor_id);
+		let cargaHoraria = Number(bloque.cargaHora);
 		const selectedIndex = selected.indexOf(asignacionSeleccionada);
 		let newSelected = [];
 
@@ -198,14 +208,18 @@ export default function MatPaginationTable() {
 		} else if (selectedIndex === 0) {
 			//unselect from checkbox
 			newSelected = newSelected.concat(selected.slice(1));
+			profId = '';
+			cargaHoraria = 0;
 			loadProfesores(false, bloque);
 		} else if (selectedIndex === selected.length - 1) {
 			newSelected = newSelected.concat(selected.slice(0, -1));
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
 		}
-		//console.log('asignacionSeleccionada ', asignacionSeleccionada);
+		//console.log('profId ', profId);
 		setSelected(newSelected);
+		setProfesorSelected(profId);
+		setCargaSelected(cargaHoraria);
 	};
 	const isSelected = (asignacionSeleccionada) => selected.indexOf(asignacionSeleccionada) !== -1;
 	/*-------------------------------------    */
@@ -276,6 +290,8 @@ export default function MatPaginationTable() {
 					<Paper className={classes.paper}>
 						<EnhancedTableToolbar
 							numSelected={selected}
+							prof={profesorSelected}
+							carga={cargaSelected}
 							profesoresToShow={profesores}
 							nombre_periodo={periodo_id}
 						/>

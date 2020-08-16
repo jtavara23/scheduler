@@ -65,8 +65,8 @@ def asignacion_create(request):
     return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'DELETE'])
-def asignacion_get_delete(request, pk):
+@api_view(['PUT', 'DELETE'])
+def asignacion_get_update_delete(request, pk):
     # i think GET will be never used!!!!
     try:
         asignacion = Asignacion.objects.get(pk=pk)
@@ -80,13 +80,25 @@ def asignacion_get_delete(request, pk):
             'data': serializer.data
         })
 
+    elif request.method == 'PUT':
+        new_profesor = request.data['profesor']
+        query = "UPDATE horario_asignacion set profesor_id =" + \
+            str(new_profesor)
+        print(">Updating asignacion: ", pk, "to profesor: ", new_profesor)
+
+        cursor = connection.cursor()
+        cursor.execute(query + " WHERE id = %s", pk)
+        cursor.close()
+
+        return Response("OK", status=status.HTTP_202_ACCEPTED)
+
     elif request.method == 'DELETE':
         asignacion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET', 'PUT'])
-def asignacion_bloque_get_update(request, bloque_id):
+def asignacion_bloque_get_updateFecha(request, bloque_id):
     try:
         # print(request.data['bloque'])
         asignacion = Asignacion.objects.filter(bloque=bloque_id)
