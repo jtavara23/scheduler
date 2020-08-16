@@ -208,7 +208,7 @@ export default function MatPaginationTable() {
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
 		}
-		console.log('main ', asignacionSeleccionada);
+		//console.log('asignacionSeleccionada ', asignacionSeleccionada);
 		setSelected(newSelected);
 	};
 	const isSelected = (asignacionSeleccionada) => selected.indexOf(asignacionSeleccionada) !== -1;
@@ -393,7 +393,7 @@ export default function MatPaginationTable() {
 					<SelectProfesor listProfesores={profesores} />
 				</Paper>
 				<Paper className={classes.paper}>
-					<TablaProfesor />
+					<TablaProfesor data_bloque={data} />
 				</Paper>
 			</Grid>
 		</Grid>

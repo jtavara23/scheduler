@@ -29,11 +29,14 @@ const useStyles = (theme) => ({
 export default function TablaProfesores(props) {
 	const [ data_rows, setData_rows ] = useState([]);
 
-	useEffect(() => {
-		service.getProfesoresinPeriodo(5).then((result) => {
-			setData_rows(result.data);
-		});
-	}, []);
+	useEffect(
+		() => {
+			service.getProfesoresinPeriodo(5).then((result) => {
+				setData_rows(result.data);
+			});
+		},
+		[ props.data_bloque ]
+	);
 
 	const classes = useStyles();
 	return (
