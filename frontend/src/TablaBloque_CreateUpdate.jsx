@@ -60,7 +60,7 @@ const Bloque_CreateUpdate = (props) => {
 	const classes = useStyles();
 	const [ bloque_id, setBloque_id ] = useState(0);
 	const [ loadedCargaHora, setLoadedCargaHora ] = useState(0);
-	const [ periodo_id, setPeriodo_id ] = useState(5);
+	const [ periodo_id, setPeriodo_id ] = useState(0);
 	const [ escuela, setEscuela ] = useState([ { value: '', display: '(Seleccionar Escuela)' } ]);
 	const [ selectedEscuela, setSelectedEscuela ] = useState('');
 	const [ curso, setCurso ] = useState([ { value: '', display: '(Seleccionar Curso)' } ]);
@@ -80,8 +80,10 @@ const Bloque_CreateUpdate = (props) => {
 	const { match: { params } } = props;
 
 	useEffect(() => {
-		setHistory(props.history);
 		console.log('use effect params ', params);
+		console.log('use effect props ', props);
+		setHistory(props.history);
+		setPeriodo_id(params.periodo);
 
 		service.getEscuelas().then((result) => {
 			let escuelasFromApi = result.data.map((esc) => {
@@ -93,7 +95,7 @@ const Bloque_CreateUpdate = (props) => {
 
 		setDia(dias);
 
-		if (params && params.pk) {
+		if (params.pk) {
 			setActualizar(true);
 			service.getBloque(params.pk).then((c) => {
 				let data = c.data;
@@ -127,6 +129,8 @@ const Bloque_CreateUpdate = (props) => {
 				});
 			});
 			//boton.value = 'Editar';
+		} else {
+			console.log('crear');
 		}
 	}, []);
 
@@ -202,7 +206,7 @@ const Bloque_CreateUpdate = (props) => {
 
 								profesor_default_id = profesor_default_id + 1;
 							}
-							history.push('/');
+							history.push('/' + periodo_id);
 						};
 						forLoop();
 					})
@@ -217,7 +221,6 @@ const Bloque_CreateUpdate = (props) => {
 
 	const handleUpdate = (pk) => {
 		let param = selectedDia + '-' + hora_ini + '-' + hora_fin;
-
 		service.updateFecha(createJsonFecha(param)).then((result) => {
 			let get_fecha_id = result.data.id;
 			service
@@ -268,7 +271,7 @@ const Bloque_CreateUpdate = (props) => {
 										console.log('updated carga of ', bloque.profesor_id, res);
 									}
 									console.log(' Bloque Actualizado!!');
-									history.push('/');
+									history.push('/' + periodo_id);
 								};
 								forLoop();
 							});

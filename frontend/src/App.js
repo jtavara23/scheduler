@@ -9,7 +9,7 @@ import ViewHorario from './ViewHorario';
 const BaseLayout = () => (
 	<div className="container-fluid">
 		<nav className="navbar navbar-expand-lg navbar-light bg-light">
-			<a className="navbar-brand" href="#">
+			<a className="navbar-brand" href="/">
 				PROGRAMA HORARIO
 			</a>
 			<button
@@ -25,20 +25,17 @@ const BaseLayout = () => (
 			</button>
 			<div className="collapse navbar-collapse" id="navbarNavAltMarkup">
 				<div className="navbar-nav">
-					<a className="nav-item nav-link" href="/">
-						DETALLES
-					</a>
-					<a className="nav-item nav-link" href="/bloque/">
-						CREATE NUEVA FILA
+					<a className="nav-item nav-link" href="/configuraciones">
+						CONFIGURACIONES
 					</a>
 				</div>
 			</div>
 		</nav>
 		<div className="content">
-			<Route path="/" exact component={TablaBloque} />
-			<Route path="/bloque/" exact component={TablaBloque_CreateUpdate} />
-			<Route path="/bloque/:pk" exact component={TablaBloque_CreateUpdate} />
-			<Route path="/bloque/view_horario/:profId" exact component={ViewHorario} />
+			<Route path="/:periodo" exact component={TablaBloque} />
+			<Route path="/:periodo/bloque/" exact component={TablaBloque_CreateUpdate} />
+			<Route path="/:periodo/bloque/:pk" exact component={TablaBloque_CreateUpdate} />
+			<Route path="/:periodo/view_horario/:profId" exact component={ViewHorario} />
 		</div>
 	</div>
 );

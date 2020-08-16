@@ -18,8 +18,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
+import QueueIcon from '@material-ui/icons/Queue';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import Fab from '@material-ui/core/Fab';
+import Box from '@material-ui/core/Box';
+import NoteAddRoundedIcon from '@material-ui/icons/NoteAddRounded';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
@@ -42,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(1),
 		textAlign: 'center',
 		color: theme.palette.text.secondary
+	},
+
+	boton: {
+		padding: '10px 10px'
 	}
 }));
 
@@ -100,7 +107,7 @@ const EnhancedTableToolbar = (props) => {
 				<Typography className={classes.title} color="inherit" variant="subtitle1" component="div" />
 			) : (
 				<Typography className={classes.title} variant="h5" id="tableTitle" component="div">
-					PERIODO {' ' + nombre_periodo + ' '} SELECCIONADO
+					PERIODO {' ' + nombre_periodo + ' '}
 				</Typography>
 			)}
 
@@ -128,7 +135,7 @@ EnhancedTableToolbar.propTypes = {
 	numSelected: PropTypes.object.isRequired
 };
 
-export default function MatPaginationTable() {
+export default function MatPaginationTable(props) {
 	const classes = useStyles();
 	const [ page, setPage ] = React.useState(0);
 	const [ data, setData ] = useState([]);
@@ -139,7 +146,8 @@ export default function MatPaginationTable() {
 	const [ profesores, setProfesores ] = useState(profesoresEmpty);
 	const [ profesorSelected, setProfesorSelected ] = useState('');
 	const [ cargaSelected, setCargaSelected ] = useState(0);
-	const periodo_id = 5;
+	const { match: { params } } = props;
+	const periodo_id = params.periodo;
 
 	useEffect(() => {
 		const GetData = async () => {
@@ -358,7 +366,12 @@ export default function MatPaginationTable() {
 													<StyledTableCell align="center">{c.cargaHora}</StyledTableCell>
 													<StyledTableCell align="center">{c.nombre}</StyledTableCell>
 													<StyledTableCell>
-														<a onClick={() => history.push('/bloque/' + c.bloque_id)}>
+														<a
+															onClick={() =>
+																history.push(
+																	'/' + periodo_id + '/bloque/' + c.bloque_id
+																)}
+														>
 															{' '}
 															<Tooltip title="EDITAR">
 																<IconButton aria-label="edit">
@@ -379,7 +392,7 @@ export default function MatPaginationTable() {
 														<a onClick={(e) => handleDuplicate(e, c, index_inList)}>
 															<Tooltip title="DUPLICAR">
 																<IconButton aria-label="copy">
-																	<FileCopyIcon />
+																	<QueueIcon />
 																</IconButton>
 															</Tooltip>
 														</a>
@@ -401,8 +414,22 @@ export default function MatPaginationTable() {
 					<Grid item xs>
 						<FormControlLabel
 							control={<Switch checked={dense} onChange={handleChangeDense} />}
-							label="Dense padding"
+							label="Reducir Alto de Filas"
 						/>
+					</Grid>
+					<Grid item xs className={classes.boton}>
+						<Box m="0.5rem">
+							<Fab
+								variant="extended"
+								size="small"
+								color="secondary"
+								aria-label="add"
+								onClick={() => history.push('/' + periodo_id + '/bloque/')}
+							>
+								<NoteAddRoundedIcon />
+								Crear Nueva Fila
+							</Fab>
+						</Box>
 					</Grid>
 					<Grid item xs>
 						<TablePagination
@@ -420,7 +447,7 @@ export default function MatPaginationTable() {
 			</Grid>
 			<Grid item xs={2}>
 				<Paper className={classes.container}>
-					<TablaProfesor data_bloque={data} hist={history} />
+					<TablaProfesor data_bloque={data} hist={history} periodo={periodo_id} />
 				</Paper>
 			</Grid>
 		</Grid>

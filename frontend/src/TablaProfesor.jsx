@@ -37,11 +37,13 @@ export default function TablaProfesores(props) {
 	const [ data_rows, setData_rows ] = useState([]);
 	const [ selected, setSelected ] = React.useState([]);
 	const [ history, setHistory ] = useState('');
+	const [ periodo_id, setPeriodo_id ] = useState(0);
 
 	useEffect(
 		() => {
 			setHistory(props.hist);
-			service.getProfesoresinPeriodo(5).then((result) => {
+			setPeriodo_id(props.periodo);
+			service.getProfesoresinPeriodo(props.periodo).then((result) => {
 				setData_rows(result.data);
 			});
 		},
@@ -73,7 +75,7 @@ export default function TablaProfesores(props) {
 
 	const goToViewHorario = (e) => {
 		//console.log('Profe, sele ', selected[0]);
-		history.push('/bloque/view_horario/' + selected[0]);
+		history.push('/' + periodo_id + '/view_horario/' + selected[0]);
 	};
 
 	return (
