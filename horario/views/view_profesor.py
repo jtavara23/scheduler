@@ -71,7 +71,7 @@ def profesor_in_periodo(request, id_per):
 @api_view(['GET', 'PUT', 'DELETE'])
 def profesor_detail(request, id):
     try:
-        profesor = Profesor.objects.get(id_profesor=id)
+        profesor = Profesor.objects.get(pk=id)
     except Profesor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 

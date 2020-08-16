@@ -86,11 +86,9 @@ const useToolbarStyles = makeStyles((theme) => ({
 	}
 }));
 
-const handleAsignarProfesor = (e, bloque) => {};
-
 const EnhancedTableToolbar = (props) => {
 	const classes = useToolbarStyles();
-	const { numSelected, prof, carga, profesoresToShow, nombre_periodo } = props;
+	const { numSelected, prof, carga, profesoresToShow, nombre_periodo, loadNewData } = props;
 	//console.log('numSelected ', numSelected);
 	return (
 		<Toolbar
@@ -113,6 +111,7 @@ const EnhancedTableToolbar = (props) => {
 					id_profesor={prof}
 					horas={carga}
 					id_periodo={nombre_periodo}
+					loadNewDataFromSelector={loadNewData}
 				/>
 			) : (
 				<Tooltip title="Filter list">
@@ -283,6 +282,20 @@ export default function MatPaginationTable() {
 		});
 	};
 
+	const loadNewDataFromSelector = (asignacion_id, new_profesor_id) => {
+		service.getProfesor(new_profesor_id).then((result) => {
+			let newList = [ ...data ];
+			let new_nombre = result.nombre;
+			newList.map((obj) => {
+				if (obj.asig_id === asignacion_id) {
+					obj.profesor_id = new_profesor_id;
+					obj.nombre = new_nombre;
+				}
+			});
+			setData(newList);
+		});
+	};
+
 	return (
 		<Grid container className={classes.root} spacing={1}>
 			<Grid item xs={10}>
@@ -294,6 +307,7 @@ export default function MatPaginationTable() {
 							carga={cargaSelected}
 							profesoresToShow={profesores}
 							nombre_periodo={periodo_id}
+							loadNewData={loadNewDataFromSelector}
 						/>
 						<TableContainer className={classes.container}>
 							<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>

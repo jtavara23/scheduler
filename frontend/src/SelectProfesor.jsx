@@ -23,9 +23,9 @@ const useStyles = makeStyles((theme) => ({
 const service = new Service();
 
 const SelectProfesor = (props) => {
-	// props: listProfesores, id_asignacion, id_profesor, horas, id_periodo
+	// props: listProfesores, id_asignacion, id_profesor, horas, id_periodo, loadNewDataFromSelector
 	const classes = useStyles();
-	const [ selectedProfesor, setSelectedProfesor ] = useState('');
+	const [ selectedProfesor, setSelectedProfesor ] = useState(0);
 	const [ profesores, setProfesores ] = useState([]); //profesores available to choose
 	const [ asignacion_id, setasignacion_id ] = useState(0);
 	const [ profesor_id, setprofesor_id ] = useState(0);
@@ -45,7 +45,6 @@ const SelectProfesor = (props) => {
 	);
 
 	const asignarProfesor = (e) => {
-		console.log(selectedProfesor);
 		service
 			.updateAsignacionProfesor({
 				// you can not change bloque or periodo in Asignacion (just fecha and profesor)
@@ -67,28 +66,30 @@ const SelectProfesor = (props) => {
 							profesor: profesor_id
 						})
 						.then((response2) => {
-							console.log('we update cargaHoraria sucessfully of ', profesor_id);
+							console.log('we update (remove) cargaHoraria sucessfully of ', profesor_id);
+
+							service.getHoraProfePeriodo(periodo_id + '-' + selectedProfesor).then((response3) => {
+								let hpp_id = response3.id;
+								let cargaTotal_profesor = response3.carga;
+								cargaTotal_profesor = cargaTotal_profesor + horas;
+								service
+									.updateCargaProfesor({
+										id: hpp_id, // hora_profesor_periodo_id
+										carga: cargaTotal_profesor,
+										periodo: periodo_id,
+										profesor: selectedProfesor
+									})
+									.then((response4) => {
+										console.log('we update (add) cargaHoraria sucessfully of', selectedProfesor);
+										props.loadNewDataFromSelector(asignacion_id, selectedProfesor);
+									})
+									.catch(() => {
+										console.log('Error updating carga New Profesor');
+									});
+							});
 						})
 						.catch(() => {
 							console.log('Error updating carga Previous Profesor');
-						});
-				});
-				service.getHoraProfePeriodo(periodo_id + '-' + selectedProfesor).then((response) => {
-					let hpp_id = response.id;
-					let cargaTotal_profesor = response.carga;
-					cargaTotal_profesor = cargaTotal_profesor + horas;
-					service
-						.updateCargaProfesor({
-							id: hpp_id, // hora_profesor_periodo_id
-							carga: cargaTotal_profesor,
-							periodo: periodo_id,
-							profesor: selectedProfesor
-						})
-						.then((response2) => {
-							console.log('we update cargaHoraria sucessfully of', selectedProfesor);
-						})
-						.catch(() => {
-							console.log('Error updating carga New Profesor');
 						});
 				});
 			});
@@ -126,4 +127,3 @@ const SelectProfesor = (props) => {
 	);
 };
 export default SelectProfesor;
-//onClick={() => asignarProfesor(e, this.state.selectedProfesor)}
