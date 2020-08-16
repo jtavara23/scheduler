@@ -36,10 +36,10 @@ const service = new Service();
 const useStyles = makeStyles((theme) => ({
 	root: { flexGrow: 1 },
 	container: {
-		maxHeight: 756
+		maxHeight: 746
 	},
 	paper: {
-		padding: theme.spacing.unit,
+		padding: theme.spacing(1),
 		textAlign: 'center',
 		color: theme.palette.text.secondary
 	}
@@ -66,7 +66,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useToolbarStyles = makeStyles((theme) => ({
 	root: {
-		paddingLeft: theme.spacing(2),
+		paddingLeft: theme.spacing(85),
 		paddingRight: theme.spacing(1)
 	},
 	highlight:
@@ -80,7 +80,9 @@ const useToolbarStyles = makeStyles((theme) => ({
 					backgroundColor: theme.palette.secondary.dark
 				},
 	title: {
-		flex: '1 1 100%'
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center'
 	}
 }));
 
@@ -88,7 +90,7 @@ const handleAsignarProfesor = (e, bloque) => {};
 
 const EnhancedTableToolbar = (props) => {
 	const classes = useToolbarStyles();
-	const { numSelected } = props;
+	const { numSelected, profesoresToShow, nombre_periodo } = props;
 	//console.log(numSelected);
 	return (
 		<Toolbar
@@ -97,21 +99,15 @@ const EnhancedTableToolbar = (props) => {
 			})}
 		>
 			{numSelected.length > 0 ? (
-				<Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-					{numSelected + '-'} seleccionado
-				</Typography>
+				<Typography className={classes.title} color="inherit" variant="subtitle1" component="div" />
 			) : (
-				<Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-					PERIODO SELECCIONADO
+				<Typography className={classes.title} variant="h5" id="tableTitle" component="div">
+					PERIODO {' ' + nombre_periodo + ' '} SELECCIONADO
 				</Typography>
 			)}
 
 			{numSelected.length > 0 ? (
-				<Tooltip title="Delete">
-					<IconButton aria-label="delete">
-						<DeleteIcon onClick={(e) => handleAsignarProfesor(e, numSelected[0])} />
-					</IconButton>
-				</Tooltip>
+				<SelectProfesor listProfesores={profesoresToShow} />
 			) : (
 				<Tooltip title="Filter list">
 					<IconButton aria-label="filter list">
@@ -274,11 +270,15 @@ export default function MatPaginationTable() {
 	};
 
 	return (
-		<Grid container className={classes.root} spacing={3}>
-			<Grid item xs={9.5}>
+		<Grid container className={classes.root} spacing={1}>
+			<Grid item xs={10}>
 				<Grid>
 					<Paper className={classes.paper}>
-						<EnhancedTableToolbar numSelected={selected} />
+						<EnhancedTableToolbar
+							numSelected={selected}
+							profesoresToShow={profesores}
+							nombre_periodo={periodo_id}
+						/>
 						<TableContainer className={classes.container}>
 							<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
 								<TableHead numSelected={selected.length}>
@@ -367,7 +367,7 @@ export default function MatPaginationTable() {
 						</TableContainer>
 					</Paper>
 				</Grid>
-				<Grid container spacing={3}>
+				<Grid container spacing={1}>
 					<Grid item xs>
 						<FormControlLabel
 							control={<Switch checked={dense} onChange={handleChangeDense} />}
@@ -388,11 +388,8 @@ export default function MatPaginationTable() {
 					</Grid>
 				</Grid>
 			</Grid>
-			<Grid item xs={2.5}>
-				<Paper>
-					<SelectProfesor listProfesores={profesores} />
-				</Paper>
-				<Paper className={classes.paper}>
+			<Grid item xs={2}>
+				<Paper className={classes.container}>
 					<TablaProfesor data_bloque={data} />
 				</Paper>
 			</Grid>

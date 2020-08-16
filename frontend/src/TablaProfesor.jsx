@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Service from './services/BloqueService';
-import styled from 'styled-components';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,23 +7,23 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
-
+import Fab from '@material-ui/core/Fab';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import { makeStyles } from '@material-ui/core/styles';
 const service = new Service();
 
-const TablaBloqueStyled = styled.div`maxHeight: 26px;`;
-
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
-		'margin-top': '1em',
-		display: 'block',
-		'margin-left': 'auto',
-		'margin-right': 'auto'
+		flexGrow: 1,
+		textAlign: 'center'
 	},
 	container: {
-		maxHeight: 790
+		maxHeight: 810
+	},
+	boton: {
+		padding: '10px 10px'
 	}
-});
+}));
 
 export default function TablaProfesores(props) {
 	const [ data_rows, setData_rows ] = useState([]);
@@ -40,8 +39,8 @@ export default function TablaProfesores(props) {
 
 	const classes = useStyles();
 	return (
-		<TablaBloqueStyled className={classes.root}>
-			<TableContainer component={Paper} className={classes.container}>
+		<Paper className={classes.root}>
+			<TableContainer className={classes.container}>
 				<Table stickyHeader aria-label="sticky table">
 					<TableHead>
 						<TableRow>
@@ -61,6 +60,12 @@ export default function TablaProfesores(props) {
 					</TableBody>
 				</Table>
 			</TableContainer>
-		</TablaBloqueStyled>
+			<TableContainer className={classes.boton}>
+				<Fab variant="extended" size="small" color="primary" aria-label="add">
+					<VisibilityIcon />
+					Ver Horario
+				</Fab>
+			</TableContainer>
+		</Paper>
 	);
 }
