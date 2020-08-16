@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 
 from ..models import Curso
-from ..serializers import CursoSerializer
+from ..serializers import CursoSerializer, CursoQuerySetSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -34,8 +34,26 @@ def curso_list(request):
         return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+def curso_from_escuela(request, escuela):
+    escuela = escuela.replace('-', ' ')
+    try:
+        curso = Curso.objects.filter(escuela_nombre=escuela)
+    except Curso.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    results = []
+    cursos = list(curso.values())
+    for c in cursos:
+        serializer = CursoQuerySetSerializer(
+            c, context={'request': request})
+        results += [serializer.data]
+    return Response({'data': results})
+
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def curso_detail(request, id):
+    id = id.replace('-', ' ')
     try:
         curso = Curso.objects.get(nombre=id)
     except Curso.DoesNotExist:

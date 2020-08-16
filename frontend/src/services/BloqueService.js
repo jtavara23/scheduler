@@ -20,6 +20,11 @@ class BloqueService {
 		return axios.get(url).then((response) => response.data);
 	}
 
+	getCursosOfEscuela(esc) {
+		const url = `${API_URL}/api/horario/curso_escuela/${esc}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
 	getHoraProfePeriodo(param) {
 		const url = `${API_URL}/api/horario/hora_profe_periodo_carga/${param}`;
 		return axios.get(url).then((response) => response.data);

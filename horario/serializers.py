@@ -51,6 +51,12 @@ class CursoSerializer(serializers.ModelSerializer):
         fields = ('nombre', 'secciones', 'escuela_nombre')
 
 
+class CursoQuerySetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Curso
+        fields = ('nombre', 'secciones', 'escuela_nombre_id')
+
+
 class EscuelaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Escuela

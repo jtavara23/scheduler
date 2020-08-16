@@ -38,6 +38,8 @@ urlpatterns = [
     url(r'^api/horario/curso/$', view_curso.curso_list),
     url(r'^api/horario/curso/(?P<id>[^\s]+)$',  # nombre
         view_curso.curso_detail),
+    url(r'^api/horario/curso_escuela/(?P<escuela>[^\s]+)$',  # nombre
+        view_curso.curso_from_escuela),
 
     url(r'^api/horario/escuela/$', view_escuela.escuela_list),
     url(r'^api/horario/escuela/(?P<nombre>[^\s]+)$',
