@@ -50,7 +50,7 @@ const dias = [
 	{ value: 'LUNES', display: 'LUNES' },
 	{ value: 'MARTES', display: 'MARTES' },
 	{ value: 'MIERCOLES', display: 'MIERCOLES' },
-	{ value: 'MIERCOLES', display: 'JUEVES' },
+	{ value: 'JUEVES', display: 'JUEVES' },
 	{ value: 'VIERNES', display: 'VIERNES' },
 	{ value: 'SABADO', display: 'SABADO' },
 	{ value: 'DOMINGO', display: 'DOMINGO' }
@@ -128,7 +128,6 @@ const Bloque_CreateUpdate = (props) => {
 					});
 				});
 			});
-			//boton.value = 'Editar';
 		} else {
 			console.log('crear');
 		}

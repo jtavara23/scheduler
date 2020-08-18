@@ -28,7 +28,6 @@ import clsx from 'clsx';
 
 import Grid from '@material-ui/core/Grid';
 
-import { useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import TablaProfesor from './TablaProfesor';
@@ -136,13 +135,14 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function MatPaginationTable(props) {
+	let profesoresEmpty = [ { value: '', display: '(Seleccionar Profesor)' } ];
 	const classes = useStyles();
+	const [ history, setHistory ] = useState('');
 	const [ page, setPage ] = React.useState(0);
 	const [ data, setData ] = useState([]);
 	const [ rowsPerPage, setRowsPerPage ] = React.useState(50);
 	const [ dense, setDense ] = React.useState(true);
 	const [ selected, setSelected ] = React.useState([]);
-	let profesoresEmpty = [ { value: '', display: '(Seleccionar Profesor)' } ];
 	const [ profesores, setProfesores ] = useState(profesoresEmpty);
 	const [ profesorSelected, setProfesorSelected ] = useState('');
 	const [ cargaSelected, setCargaSelected ] = useState(0);
@@ -150,6 +150,7 @@ export default function MatPaginationTable(props) {
 	const periodo_id = params.periodo;
 
 	useEffect(() => {
+		setHistory(props.history);
 		const GetData = async () => {
 			service.getPeriodo(periodo_id).then((result) => {
 				if (result.data.length) {
@@ -228,9 +229,9 @@ export default function MatPaginationTable(props) {
 		setProfesorSelected(profId);
 		setCargaSelected(cargaHoraria);
 	};
+
 	const isSelected = (asignacionSeleccionada) => selected.indexOf(asignacionSeleccionada) !== -1;
-	/*-------------------------------------    */
-	const history = useHistory();
+
 	/*-------------------------------------    */
 	const handleDelete = (e, pk, cargaHora, profesor_id) => {
 		service.deleteAsignacion(pk).then((response) => {

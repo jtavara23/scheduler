@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter } from 'react-router-dom'; // BrowserRouter keeps the UI in sync with the URL using the HTML5 history API.
 import { Route } from 'react-router-dom';
 import './App.css';
+import Periodo from './Periodo';
 import TablaBloque from './TablaBloque';
 import TablaBloque_CreateUpdate from './TablaBloque_CreateUpdate';
 import ViewHorario from './ViewHorario';
@@ -32,6 +33,7 @@ const BaseLayout = () => (
 			</div>
 		</nav>
 		<div className="content">
+			<Route path="/" exact component={Periodo} />
 			<Route path="/:periodo" exact component={TablaBloque} />
 			<Route path="/:periodo/bloque/" exact component={TablaBloque_CreateUpdate} />
 			<Route path="/:periodo/bloque/:pk" exact component={TablaBloque_CreateUpdate} />
