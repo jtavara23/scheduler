@@ -131,7 +131,7 @@ const EnhancedTableToolbar = (props) => {
 };
 
 EnhancedTableToolbar.propTypes = {
-	numSelected: PropTypes.object.isRequired
+	numSelected: PropTypes.array.isRequired
 };
 
 export default function MatPaginationTable(props) {

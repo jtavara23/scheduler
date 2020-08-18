@@ -13,14 +13,15 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles, withStyles, lighten } from '@material-ui/core/styles';
+import QueueIcon from '@material-ui/icons/Queue';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import PeriodoNew from './Periodo_New';
+import Periodo_UpdateDuplicate from './Periodo_UpdateDuplicate';
 
 const service = new Service();
 
@@ -42,8 +43,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 	highlight:
 		theme.palette.type === 'light'
 			? {
-					color: theme.palette.secondary.main,
-					backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+					color: theme.palette.secondary.main
 				}
 			: {
 					color: theme.palette.text.primary,
@@ -58,7 +58,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
 	const classes = useToolbarStyles();
-	const { numSelected } = props;
+	const { numSelected, nameSelected, updateDuplicar, refreshData } = props;
 	//console.log('numSelected ', numSelected);
 	return (
 		<Toolbar
@@ -73,18 +73,19 @@ const EnhancedTableToolbar = (props) => {
 			)}
 
 			{numSelected.length > 0 ? (
-				<Tooltip title="Filter list">
-					<IconButton aria-label="filter list">
-						<PeriodoNew />
-					</IconButton>
-				</Tooltip>
+				<Periodo_UpdateDuplicate
+					periodo_id={numSelected}
+					periodo_name={nameSelected}
+					accion_update={updateDuplicar}
+					refreshDataOnParent={refreshData}
+				/>
 			) : null}
 		</Toolbar>
 	);
 };
 
 EnhancedTableToolbar.propTypes = {
-	numSelected: PropTypes.number.isRequired
+	numSelected: PropTypes.array.isRequired
 };
 
 const StyledTableCell = withStyles((theme) => ({
@@ -98,16 +99,20 @@ const StyledTableCell = withStyles((theme) => ({
 	}
 }))(TableCell);
 
-export default function TablaProfesores(props) {
+export default function Periodo() {
 	const [ data_rows, setData_rows ] = useState([]);
 	const [ selected, setSelected ] = React.useState([]);
-	const [ periodo_id, setPeriodo_id ] = useState(0);
+	const [ periodoName, setPeriodoName ] = useState('');
+	const [ accionUpdate, setAccionUpdate ] = useState(true);
 
-	useEffect(() => {
-		service.getPeriodos().then((result) => {
-			setData_rows(result.data);
-		});
-	}, []);
+	useEffect(
+		() => {
+			service.getPeriodos().then((result) => {
+				setData_rows(result.data);
+			});
+		},
+		[ data_rows ]
+	);
 
 	const history = useHistory();
 
@@ -115,13 +120,13 @@ export default function TablaProfesores(props) {
 
 	const isSelected = (profesorSeleccionado) => selected.indexOf(profesorSeleccionado) !== -1;
 
-	const handleClick = (profesorID) => {
-		const selectedIndex = selected.indexOf(profesorID);
+	const handleClick = (periodo) => {
+		const selectedIndex = selected.indexOf(periodo);
 		let newSelected = [];
 
 		if (selectedIndex === -1) {
 			//select from row
-			newSelected = newSelected.concat(selected, profesorID);
+			newSelected = newSelected.concat(selected, periodo);
 		} else if (selectedIndex === 0) {
 			//unselect from row
 			newSelected = newSelected.concat(selected.slice(1));
@@ -130,24 +135,47 @@ export default function TablaProfesores(props) {
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
 		}
-		//console.log('newSelected ', newSelected);
+		console.log('newSelected ', newSelected);
 		setSelected(newSelected);
 	};
 
-	const goToViewPeriodo = (id) => {
+	const goToViewPeriodo = (c) => {
 		//console.log('Profe, sele ', selected[0]);
-		history.push('/' + id);
+		history.push('/' + c.id);
 	};
-	const editPeriodo = (id) => {
+	const editPeriodo = (c) => {
 		//TODO edit
-		handleClick(id);
+		setPeriodoName(c.nombre);
+		setAccionUpdate(true);
+		handleClick(c.id);
 	};
-	const deletePeriodo = (id) => {
+	const deletePeriodo = (c) => {
 		//TODO delete from Asignacion where periodo_id =
 		//TODO delete from Bloque where periodo_id =
 		//TODO delete from horaprofeperiodo where periodo_id =
 		//TODO delete from periodo where id =
-		handleClick(id);
+		handleClick(c.id);
+	};
+	const duplicatePeriodo = (c, index) => {
+		//TODO delete from Asignacion where periodo_id =
+		//TODO delete from Bloque where periodo_id =
+		//TODO delete from horaprofeperiodo where periodo_id =
+		//TODO delete from periodo where id =
+		setPeriodoName(c.nombre);
+		setAccionUpdate(false);
+		handleClick(c.id);
+	};
+
+	const refreshDataOnParent = (periodoId, periodoNombre) => {
+		//console.log(periodoId, periodoNombre);
+		let newData = [ ...data_rows ];
+		newData.map((obj) => {
+			if (obj.id === periodoId) {
+				obj.nombre = periodoNombre;
+			}
+		});
+		setData_rows(newData);
+		setSelected([]);
 	};
 
 	return (
@@ -160,7 +188,12 @@ export default function TablaProfesores(props) {
 			style={{ minHeight: '100vh' }}
 		>
 			<Paper className={classes.root}>
-				<EnhancedTableToolbar numSelected={selected} />
+				<EnhancedTableToolbar
+					numSelected={selected}
+					nameSelected={periodoName}
+					updateDuplicar={accionUpdate}
+					refreshData={refreshDataOnParent}
+				/>
 				<TableContainer className={classes.container}>
 					<Table stickyHeader aria-label="sticky table" size={'small'}>
 						<TableHead>
@@ -178,7 +211,7 @@ export default function TablaProfesores(props) {
 											{c.nombre}
 										</StyledTableCell>
 										<StyledTableCell align="center">
-											<a onClick={(e) => goToViewPeriodo(c.id)}>
+											<a onClick={(e) => goToViewPeriodo(c)}>
 												<Tooltip title="VER">
 													<IconButton aria-label="Ver">
 														<VisibilityIcon />
@@ -186,7 +219,7 @@ export default function TablaProfesores(props) {
 												</Tooltip>
 											</a>
 
-											<a onClick={(e) => editPeriodo(c.id)}>
+											<a onClick={(e) => editPeriodo(c)}>
 												<Tooltip title="EDITAR">
 													<IconButton aria-label="Editar">
 														<EditIcon />
@@ -194,10 +227,17 @@ export default function TablaProfesores(props) {
 												</Tooltip>
 											</a>
 
-											<a onClick={(e) => deletePeriodo(c.id)}>
+											<a onClick={(e) => deletePeriodo(c)}>
 												<Tooltip title="ELIMINAR">
 													<IconButton aria-label="Eliminar">
 														<DeleteIcon />
+													</IconButton>
+												</Tooltip>
+											</a>
+											<a onClick={(e) => duplicatePeriodo(c, index)}>
+												<Tooltip title="DUPLICAR">
+													<IconButton aria-label="duplicar">
+														<QueueIcon />
 													</IconButton>
 												</Tooltip>
 											</a>
