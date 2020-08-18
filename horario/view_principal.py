@@ -14,7 +14,8 @@ from .serializers import *
 @api_view(['GET'])
 def tabla_periodo(request, pk):
     cursor = connection.cursor()
-    cursor.callproc('get_tabla_periodo', pk)
+    statement = "call get_tabla_periodo("+pk+")"
+    cursor.execute(statement)
     results = dictfetchall(cursor)
     cursor.close()
 
@@ -128,19 +129,6 @@ def asignacion_bloque_get_updateFecha(request, bloque_id):
                 query + " WHERE id = %s", asig.id)
         cursor.close()
         return Response("OK", status=status.HTTP_202_ACCEPTED)
-
-
-@api_view(['GET'])
-def cargaTotal_profe_periodo(request, data):
-    param = data.split('-')  # periodo - profesor
-    try:
-        prof_periodo_cargaTotal = HoraProfePeriodo.objects.filter(
-            periodo=param[0], profesor=param[1])
-    except HoraProfePeriodo.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    result = list(prof_periodo_cargaTotal.values())
-    data = {'id': result[0]['id'], 'carga':  result[0]['carga']}
-    return Response(data, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['POST'])

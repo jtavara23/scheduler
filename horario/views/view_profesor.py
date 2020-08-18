@@ -40,7 +40,8 @@ def profesor_list(request):
 def profesor_in_periodo(request, id_per):
     if request.method == 'GET':
         cursor = connection.cursor()
-        cursor.callproc('get_tabla_profesor_in_periodo', id_per)
+        statement = "call get_tabla_profesor_in_periodo("+id_per+")"
+        cursor.execute(statement)
         results = dictfetchall(cursor)
         cursor.close()
 
@@ -94,13 +95,15 @@ def profesor_detail(request, id):
 
 @api_view(['POST'])
 def get_available_teachers(request):
+    print("available teacher ", request.data)
     Xperiodo = request.data['periodo']
     Xdia = request.data['dia_fecha']
     Xhora_ini = request.data['hora_ini']
     Xhora_fin = request.data['hora_fin']
     cursor = connection.cursor()
-    cursor.callproc('get_available_profesores', [
-                    Xperiodo, Xdia, Xhora_ini, Xhora_fin])
+    statement = "call get_available_profesores(" + \
+        Xperiodo+",'"+Xdia+"','"+Xhora_ini+"','"+Xhora_fin+"')"
+    cursor.execute(statement)
     results = dictfetchall(cursor)
     cursor.close()
 
