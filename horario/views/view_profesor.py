@@ -95,7 +95,6 @@ def profesor_detail(request, id):
 
 @api_view(['POST'])
 def get_available_teachers(request):
-    print("available teacher ", request.data)
     Xperiodo = request.data['periodo']
     Xdia = request.data['dia_fecha']
     Xhora_ini = request.data['hora_ini']

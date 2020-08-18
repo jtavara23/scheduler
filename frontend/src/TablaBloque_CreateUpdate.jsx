@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: theme.spacing(4)
 	},
 	paper: {
-		padding: theme.spacing.unit,
+		padding: theme.spacing(1),
 		textAlign: 'center',
 		color: theme.palette.text.secondary
 	}
