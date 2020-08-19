@@ -117,3 +117,14 @@ class AvailableProfesoresSerializer(serializers.Serializer):
     nombre_prof = serializers.CharField()
     code_prof = serializers.CharField()
     id_prof = serializers.IntegerField()
+
+
+class ViewHorarioSerializer(serializers.Serializer):
+    curso_nombre_id = serializers.CharField()
+    nrc_t = serializers.CharField()
+    nrc_p = serializers.CharField()
+    nrc_l = serializers.CharField()
+    aula = serializers.CharField()
+    dia_fecha = serializers.CharField()
+    hora_ini = serializers.TimeField()
+    hora_fin = serializers.TimeField()

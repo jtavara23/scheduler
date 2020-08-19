@@ -50,7 +50,6 @@ const Periodo_New = (props) => {
 	}, []);
 
 	const handleSubmit = (e) => {
-		console.log('update', update);
 		if (update) {
 			service
 				.updatePeriodo({
@@ -100,13 +99,13 @@ const Periodo_New = (props) => {
 										console.log('datos a duplicar in Asignacion ', datosAsignacion);
 										service.createAsignacion(datosAsignacion).then((rr) => {
 											console.log('duplicacion finalizada');
-											props.refreshDataOnParent(newPeriodo, newName);
 										});
 									});
 								});
 							});
 						});
 					});
+					props.refreshDataOnParent(newPeriodo, newName);
 				});
 		}
 	};
