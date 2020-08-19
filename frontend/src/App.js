@@ -6,6 +6,7 @@ import Periodo from './Periodo';
 import TablaBloque from './TablaBloque';
 import TablaBloque_CreateUpdate from './TablaBloque_CreateUpdate';
 import ViewHorario from './ViewHorario';
+import PrintIcon from '@material-ui/icons/Print';
 
 const BaseLayout = () => (
 	<div className="container-fluid">
@@ -29,6 +30,9 @@ const BaseLayout = () => (
 					<a className="nav-item nav-link" href="/configuraciones">
 						CONFIGURACIONES
 					</a>
+					<button onClick={() => window.print()}>
+						<PrintIcon />
+					</button>
 				</div>
 			</div>
 		</nav>

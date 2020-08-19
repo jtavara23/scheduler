@@ -5,7 +5,7 @@ from rest_framework import status
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import connection
 from ..models import Profesor
-from ..serializers import ProfesorSerializer, TablaProfesoresSerializer, dictfetchall, AvailableProfesoresSerializer
+from ..serializers import ProfesorSerializer, TablaProfesoresSerializer, dictfetchall, AvailableProfesoresSerializer, ViewHorarioSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -34,6 +34,24 @@ def profesor_list(request):
             if good == len(list_profesores):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def view_horario_profesor(request):
+    Xperiodo = str(request.data['periodo'])
+    Xprofesor = str(request.data['profesor'])
+    cursor = connection.cursor()
+    statement = "call view_horario_periodo_profesor(" + \
+        Xperiodo+",'"+Xprofesor+"')"
+    cursor.execute(statement)
+    results = dictfetchall(cursor)
+    cursor.close()
+
+    serializer = ViewHorarioSerializer(
+        results, context={'request': request}, many=True)
+    return Response(
+        serializer.data, status=status.HTTP_200_OK
+    )
 
 
 @api_view(['GET', 'POST'])
