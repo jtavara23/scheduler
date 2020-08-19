@@ -26,12 +26,55 @@ def tabla_periodo(request, pk):
     })
 
 
+@api_view(['GET', 'DELETE'])
+def bloqueFromPeriodo(request, pk):
+    try:
+        bloques = Bloque.objects.filter(
+            periodo=pk)
+    except Bloque.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    result = list(bloques.values())
+    if request.method == 'GET':
+        data = []
+        for res in result:
+            r = {'id':  res['id'],
+                 'periodo':  res['periodo_id'],
+                 'escuela_nombre':  res['escuela_nombre_id'],
+                 'curso_nombre':  res['curso_nombre_id'],
+                 'nrc_t':  res['nrc_t'],
+                 'nrc_p':  res['nrc_p'],
+                 'nrc_l':  res['nrc_l'],
+                 'aula':  res['aula'],
+                 'cargaHora':  res['cargaHora'],
+                 'fecha':  res['fecha_id']}
+            data += [r]
+        return Response(data, status=status.HTTP_202_ACCEPTED)
+
+    elif request.method == 'DELETE':
+        for res in result:
+            bloque = Bloque.objects.get(pk=res['id'])
+            bloque.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['POST'])
 def bloque_create(request):
     serializer = BloqueSerializer(data=request.data)
     if serializer.is_valid():
         bloque = serializer.save()
         return Response({'id': bloque.id}, status=status.HTTP_201_CREATED)
+    elif isinstance(request.data, list):
+        list_bloque = request.data
+        new_bloques = []
+        for obj in list_bloque:
+            serializer = BloqueSerializer(data=obj)
+            if serializer.is_valid():
+                newBloque = serializer.save()
+                new_bloques += [{'id': newBloque.id}]
+        if len(new_bloques) == len(list_bloque):
+            print(str(len(new_bloques)) + " objects were added")
+            return Response(new_bloques, status=status.HTTP_201_CREATED)
     return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -56,6 +99,34 @@ def bloque_get_update(request, pk):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+####################################################################################
+
+
+@api_view(['GET', 'DELETE'])
+def asignacionFromPeriodo(request, period):
+    try:
+        asignaciones = Asignacion.objects.filter(
+            periodo=period)
+    except Asignacion.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    result = list(asignaciones.values())
+    if request.method == 'GET':
+        data = []
+        for res in result:
+            r = {'bloque':  res['bloque_id'],
+                 'fecha':  res['fecha_id'],
+                 'periodo':  res['periodo_id'],
+                 'profesor':  res['profesor_id']}
+            data += [r]
+        return Response(data, status=status.HTTP_202_ACCEPTED)
+
+    elif request.method == 'DELETE':
+        for res in result:
+            asignacion = Asignacion.objects.get(pk=res['id'])
+            asignacion.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['POST'])
 def asignacion_create(request):
@@ -63,6 +134,17 @@ def asignacion_create(request):
     if serializer.is_valid():
         asignacion = serializer.save()
         return Response({'id': asignacion.id}, status=status.HTTP_201_CREATED)
+
+    elif isinstance(request.data, list):
+        list_asig = request.data
+        good = 0
+        for obj in list_asig:
+            serializer = AsignacionSerializer(data=obj)
+            if serializer.is_valid():
+                serializer.save()
+                good = good + 1
+        if good == len(list_asig):
+            return Response(str(good) + " objects were added", status=status.HTTP_201_CREATED)
     return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 

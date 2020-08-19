@@ -235,7 +235,7 @@ export default function MatPaginationTable(props) {
 	/*-------------------------------------    */
 	const handleDelete = (e, pk, cargaHora, profesor_id) => {
 		service.deleteAsignacion(pk).then((response) => {
-			service.getHoraProfePeriodo(periodo_id + '-' + profesor_id).then((response2) => {
+			service.getHoraProfePeriodoCarga(periodo_id + '-' + profesor_id).then((response2) => {
 				let hpp_id = response2.id;
 				let cargaTotal_profesor = response2.carga;
 				cargaTotal_profesor = cargaTotal_profesor - cargaHora;
@@ -264,7 +264,7 @@ export default function MatPaginationTable(props) {
 			let periodo_id = response.data.periodo;
 			let profesor_id = response.data.profesor;
 			let newasig = response.data.id;
-			service.getHoraProfePeriodo(periodo_id + '-' + profesor_id).then((response2) => {
+			service.getHoraProfePeriodoCarga(periodo_id + '-' + profesor_id).then((response2) => {
 				let hpp_id = response2.id;
 				let cargaTotal_profesor = response2.carga;
 				cargaTotal_profesor = cargaTotal_profesor + obj.cargaHora;

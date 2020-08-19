@@ -10,13 +10,23 @@ class BloqueService {
 		return axios.get(url).then((response) => response.data);
 	}
 
-	getAsignacion_byBloque(bloqueid) {
+	getAsignacionFromBloque(bloqueid) {
 		const url = `${API_URL}/api/horario/asignacion_bloque/${bloqueid}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
+	getAsignacionFromPeriodo(period) {
+		const url = `${API_URL}/api/horario/asignacion_periodo/${period}`;
 		return axios.get(url).then((response) => response.data);
 	}
 
 	getBloque(pk) {
 		const url = `${API_URL}/api/horario/bloque/${pk}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
+	getBloqueFromPeriodo(pk) {
+		const url = `${API_URL}/api/horario/bloque_periodo/${pk}`;
 		return axios.get(url).then((response) => response.data);
 	}
 
@@ -26,6 +36,11 @@ class BloqueService {
 	}
 
 	getHoraProfePeriodo(param) {
+		const url = `${API_URL}/api/horario/hora_profe_periodo/${param}`;
+		return axios.get(url).then((response) => response.data);
+	}
+
+	getHoraProfePeriodoCarga(param) {
 		const url = `${API_URL}/api/horario/hora_profe_periodo_carga/${param}`;
 		return axios.get(url).then((response) => response.data);
 	}
@@ -84,6 +99,16 @@ class BloqueService {
 		return axios.post(url, fecha);
 	}
 
+	createHoraProfePeriodo(datos) {
+		const url = `${API_URL}/api/horario/hora_profe_periodo/`;
+		return axios.post(url, datos);
+	}
+
+	createPeriodo(periodo) {
+		const url = `${API_URL}/api/horario/periodos/`;
+		return axios.post(url, periodo);
+	}
+
 	/**----------------------------------------------------- */
 	updateAsignacionProfesor(asignacion) {
 		const url = `${API_URL}/api/horario/asignacion/${asignacion.id}`;
@@ -114,6 +139,22 @@ class BloqueService {
 	/**----------------------------------------------------- */
 	deleteAsignacion(asignacion_id) {
 		const url = `${API_URL}/api/horario/asignacion/${asignacion_id}`;
+		return axios.delete(url);
+	}
+	deleteAsignacionOfPeriodo(id) {
+		const url = `${API_URL}/api/horario/asignacion_periodo/${id}`;
+		return axios.delete(url);
+	}
+	deleteBloqueOfPeriodo(id) {
+		const url = `${API_URL}/api/horario/bloque_periodo/${id}`;
+		return axios.delete(url);
+	}
+	deleteHoraProfeOfPeriodo(id) {
+		const url = `${API_URL}/api/horario/hora_profe_periodo/${id}`;
+		return axios.delete(url);
+	}
+	deletePeriodo(id) {
+		const url = `${API_URL}/api/horario/periodos/${id}`;
 		return axios.delete(url);
 	}
 }

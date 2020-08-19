@@ -34,31 +34,46 @@ def hora_profe_periodo_list(request):
         return Response(serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def hora_profe_periodo_detail(request, id):
-    try:
-        hora_profe_periodo = HoraProfePeriodo.objects.get(pk=id)
-    except HoraProfePeriodo.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    """
-    if request.method == 'GET':
-        serializer = HoraProfePeriodoSerializer(
-            hora_profe_periodo, context={'request': request})
-        return Response(serializer.data)
-    """
-    if request.method == 'PUT':
-        # old_hora_profe_periodo = hora_profe_periodo
-        serializer = HoraProfePeriodoSerializer(
-            hora_profe_periodo, data=request.data, context={'request': request})
-        if serializer.is_valid():
-            # old_hora_profe_periodo.delete()
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
-        hora_profe_periodo.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    if (request.method == 'GET' or request.method == 'DELETE'):
+        try:
+            prof_periodo_cargaTotal = HoraProfePeriodo.objects.filter(
+                periodo=id)
+        except HoraProfePeriodo.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        result = list(prof_periodo_cargaTotal.values())
+        if request.method == 'GET':
+            data = []
+            for res in result:
+                r = {'carga': res['carga'], 'periodo':  res['periodo_id'],
+                     'profesor':  res['profesor_id']}
+                data += [r]
+            return Response(data, status=status.HTTP_202_ACCEPTED)
+
+        elif request.method == 'DELETE':
+            for res in result:
+                hora_profe_periodo = HoraProfePeriodo.objects.get(pk=res['id'])
+                hora_profe_periodo.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    else:
+        try:
+            hora_profe_periodo = HoraProfePeriodo.objects.get(pk=id)
+        except HoraProfePeriodo.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if request.method == 'PUT':
+            # old_hora_profe_periodo = hora_profe_periodo
+            serializer = HoraProfePeriodoSerializer(
+                hora_profe_periodo, data=request.data, context={'request': request})
+            if serializer.is_valid():
+                # old_hora_profe_periodo.delete()
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

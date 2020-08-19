@@ -30,8 +30,12 @@ urlpatterns = [
         view_principal.asignacion_bloque_get_updateFecha),
     url(r'^api/horario/asignacion_duplicate/(?P<asig_id>[^\s]+)$',
         view_principal.asignacion_bloque_duplicate),
+    url(r'^api/horario/asignacion_periodo/(?P<period>[^\s]+)$',
+        view_principal.asignacionFromPeriodo),
 
     url(r'^api/horario/bloque/$', view_principal.bloque_create),
+    url(r'^api/horario/bloque_periodo/(?P<pk>[^\s]+)$',
+        view_principal.bloqueFromPeriodo),
     url(r'^api/horario/bloque/(?P<pk>[^\s]+)$',
         view_principal.bloque_get_update),
 

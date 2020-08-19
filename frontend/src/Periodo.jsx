@@ -29,10 +29,7 @@ const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1
 	},
-	container: {},
-	boton: {
-		margin: '10px 10px'
-	}
+	container: { maxHeight: 860 }
 }));
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -74,7 +71,7 @@ const EnhancedTableToolbar = (props) => {
 
 			{numSelected.length > 0 ? (
 				<Periodo_UpdateDuplicate
-					periodo_id={numSelected}
+					periodo_id={numSelected[0]}
 					periodo_name={nameSelected}
 					accion_update={updateDuplicar}
 					refreshDataOnParent={refreshData}
@@ -105,14 +102,11 @@ export default function Periodo() {
 	const [ periodoName, setPeriodoName ] = useState('');
 	const [ accionUpdate, setAccionUpdate ] = useState(true);
 
-	useEffect(
-		() => {
-			service.getPeriodos().then((result) => {
-				setData_rows(result.data);
-			});
-		},
-		[ data_rows ]
-	);
+	useEffect(() => {
+		service.getPeriodos().then((result) => {
+			setData_rows(result.data);
+		});
+	}, []);
 
 	const history = useHistory();
 
@@ -135,32 +129,19 @@ export default function Periodo() {
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
 		}
-		console.log('newSelected ', newSelected);
 		setSelected(newSelected);
 	};
 
 	const goToViewPeriodo = (c) => {
-		//console.log('Profe, sele ', selected[0]);
 		history.push('/' + c.id);
 	};
 	const editPeriodo = (c) => {
-		//TODO edit
 		setPeriodoName(c.nombre);
 		setAccionUpdate(true);
 		handleClick(c.id);
 	};
-	const deletePeriodo = (c) => {
-		//TODO delete from Asignacion where periodo_id =
-		//TODO delete from Bloque where periodo_id =
-		//TODO delete from horaprofeperiodo where periodo_id =
-		//TODO delete from periodo where id =
-		handleClick(c.id);
-	};
-	const duplicatePeriodo = (c, index) => {
-		//TODO delete from Asignacion where periodo_id =
-		//TODO delete from Bloque where periodo_id =
-		//TODO delete from horaprofeperiodo where periodo_id =
-		//TODO delete from periodo where id =
+
+	const duplicatePeriodo = (c) => {
 		setPeriodoName(c.nombre);
 		setAccionUpdate(false);
 		handleClick(c.id);
@@ -174,8 +155,26 @@ export default function Periodo() {
 				obj.nombre = periodoNombre;
 			}
 		});
-		setData_rows(newData);
+		if (!accionUpdate) {
+			newData.push({ periodoId, periodoNombre });
+		}
 		setSelected([]);
+		setData_rows(newData);
+	};
+
+	const deletePeriodo = (c) => {
+		let per = c.id;
+		service.deleteAsignacionOfPeriodo(per).then((res) => {
+			service.deleteBloqueOfPeriodo(per).then((res2) => {
+				service.deleteHoraProfeOfPeriodo(per).then((res3) => {
+					service.deletePeriodo(per).then((res4) => {
+						console.log('periodo ', per, ' eliminado');
+						let newData = data_rows.filter((obj) => obj.id !== per);
+						setData_rows(newData);
+					});
+				});
+			});
+		});
 	};
 
 	return (
@@ -234,7 +233,7 @@ export default function Periodo() {
 													</IconButton>
 												</Tooltip>
 											</a>
-											<a onClick={(e) => duplicatePeriodo(c, index)}>
+											<a onClick={(e) => duplicatePeriodo(c)}>
 												<Tooltip title="DUPLICAR">
 													<IconButton aria-label="duplicar">
 														<QueueIcon />

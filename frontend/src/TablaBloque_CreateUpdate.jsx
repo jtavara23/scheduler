@@ -188,7 +188,7 @@ const Bloque_CreateUpdate = (props) => {
 								console.log('New asignacion created!', asignacion_id);
 
 								// UPDATE CARGA PROFESOR
-								const profe_carga = await service.getHoraProfePeriodo(
+								const profe_carga = await service.getHoraProfePeriodoCarga(
 									periodo_id + '-' + profesor_default_id
 								);
 								let hpp_id = profe_carga.id;
@@ -253,7 +253,7 @@ const Bloque_CreateUpdate = (props) => {
 										let bloque = bloques[index];
 
 										// UPDATE CARGA PROFESOR
-										const profe_carga = await service.getHoraProfePeriodo(
+										const profe_carga = await service.getHoraProfePeriodoCarga(
 											bloque.periodo_id + '-' + bloque.profesor_id
 										);
 										let hpp_id = profe_carga.id;

@@ -54,7 +54,7 @@ const SelectProfesor = (props) => {
 			})
 			.then((result) => {
 				console.log('asginacion Update');
-				service.getHoraProfePeriodo(periodo_id + '-' + profesor_id).then((response) => {
+				service.getHoraProfePeriodoCarga(periodo_id + '-' + profesor_id).then((response) => {
 					let hpp_id = response.id;
 					let cargaTotal_profesor = response.carga;
 					cargaTotal_profesor = cargaTotal_profesor - horas;
@@ -68,7 +68,7 @@ const SelectProfesor = (props) => {
 						.then((response2) => {
 							console.log('we update (remove) cargaHoraria sucessfully of ', profesor_id);
 
-							service.getHoraProfePeriodo(periodo_id + '-' + selectedProfesor).then((response3) => {
+							service.getHoraProfePeriodoCarga(periodo_id + '-' + selectedProfesor).then((response3) => {
 								let hpp_id = response3.id;
 								let cargaTotal_profesor = response3.carga;
 								cargaTotal_profesor = cargaTotal_profesor + horas;

@@ -39,24 +39,75 @@ const Periodo_New = (props) => {
 	const [ newName, setnewName ] = useState('');
 
 	useEffect(() => {
-		setnewName(props.periodo_name);
 		setPeriodo(props.periodo_id);
+
 		if (props.accion_update) {
+			setnewName(props.periodo_name);
 			setUpdate(true);
+		} else {
+			setnewName('Copia ' + props.periodo_name);
 		}
 	}, []);
 
 	const handleSubmit = (e) => {
+		console.log('update', update);
 		if (update) {
 			service
 				.updatePeriodo({
 					id: periodo,
 					nombre: newName
 				})
-				.then((result) => {
+				.then((rr) => {
 					props.refreshDataOnParent(periodo, newName);
 				});
 		} else {
+			service
+				.createPeriodo({
+					nombre: newName
+				})
+				.then((result) => {
+					let newPeriodo = result.data.id;
+					service.getHoraProfePeriodo(periodo).then((result2) => {
+						let datos = result2;
+						datos.map((obj) => {
+							obj.periodo = newPeriodo;
+						});
+						console.log('datos a duplicar in HoraProfePeriodo ', datos.length);
+
+						service.createHoraProfePeriodo(datos).then((rr) => {
+							service.getBloqueFromPeriodo(periodo).then((result3) => {
+								let datosBloque = result3;
+								let from_ids = datosBloque.map((d) => d.id);
+								datosBloque.map((d) => {
+									delete d.id;
+								});
+								datosBloque.map((b) => {
+									b.periodo = newPeriodo;
+								});
+								console.log('datos a Duplicar in Bloque ', datosBloque.length);
+								service.createBloque(datosBloque).then((resultBloque) => {
+									let to_ids = resultBloque.data.map((obj) => obj.id);
+									let hashMap = {};
+									from_ids.forEach((key, i) => (hashMap[key] = to_ids[i]));
+
+									service.getAsignacionFromPeriodo(periodo).then((result4) => {
+										let datosAsignacion = result4;
+										datosAsignacion.map((asi) => {
+											asi.bloque = hashMap[asi.bloque];
+											asi.periodo = newPeriodo;
+										});
+
+										console.log('datos a duplicar in Asignacion ', datosAsignacion.length);
+										service.createAsignacion(datosAsignacion).then((rr) => {
+											console.log('duplicacion finalizada');
+											props.refreshDataOnParent(newPeriodo, newName);
+										});
+									});
+								});
+							});
+						});
+					});
+				});
 		}
 	};
 
@@ -73,7 +124,7 @@ const Periodo_New = (props) => {
 				<TextField
 					name="NuevoPeriodo"
 					label="Nuevo nombre de Periodo"
-					value={'Copia ' + newName}
+					value={newName}
 					onChange={(e) => setnewName(e.target.value)}
 				/>
 			)}
