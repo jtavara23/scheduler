@@ -84,7 +84,7 @@ const Periodo_New = (props) => {
 								datosBloque.map((b) => {
 									b.periodo = newPeriodo;
 								});
-								console.log('datos a Duplicar in Bloque ', datosBloque.length);
+								console.log('datos a Duplicar in Bloque ', datosBloque);
 								service.createBloque(datosBloque).then((resultBloque) => {
 									let to_ids = resultBloque.data.map((obj) => obj.id);
 									let hashMap = {};
@@ -97,7 +97,7 @@ const Periodo_New = (props) => {
 											asi.periodo = newPeriodo;
 										});
 
-										console.log('datos a duplicar in Asignacion ', datosAsignacion.length);
+										console.log('datos a duplicar in Asignacion ', datosAsignacion);
 										service.createAsignacion(datosAsignacion).then((rr) => {
 											console.log('duplicacion finalizada');
 											props.refreshDataOnParent(newPeriodo, newName);

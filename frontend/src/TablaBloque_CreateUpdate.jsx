@@ -245,7 +245,7 @@ const Bloque_CreateUpdate = (props) => {
 							periodo: periodo_id
 						})
 						.then((result) => {
-							service.getAsignacion_byBloque(bloque_id).then((res) => {
+							service.getAsignacionFromBloque(bloque_id).then((res) => {
 								let bloques = res.data;
 								console.log(bloques);
 								const forLoop = async (_) => {

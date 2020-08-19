@@ -94,7 +94,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
 	const classes = useToolbarStyles();
-	const { numSelected, prof, carga, profesoresToShow, nombre_periodo, loadNewData } = props;
+	const { numSelected, prof, carga, profesoresToShow, id_periodo, nombre_periodo, loadNewData } = props;
 	//console.log('numSelected ', numSelected);
 	return (
 		<Toolbar
@@ -116,7 +116,7 @@ const EnhancedTableToolbar = (props) => {
 					id_asignacion={numSelected[0]}
 					id_profesor={prof}
 					horas={carga}
-					id_periodo={nombre_periodo}
+					id_periodo={id_periodo}
 					loadNewDataFromSelector={loadNewData}
 				/>
 			) : (
@@ -146,6 +146,7 @@ export default function MatPaginationTable(props) {
 	const [ profesores, setProfesores ] = useState(profesoresEmpty);
 	const [ profesorSelected, setProfesorSelected ] = useState('');
 	const [ cargaSelected, setCargaSelected ] = useState(0);
+	const [ periodo_nombre, setPeriodo_nombre ] = useState('');
 	const { match: { params } } = props;
 	const periodo_id = params.periodo;
 
@@ -158,6 +159,9 @@ export default function MatPaginationTable(props) {
 				} else {
 					console.log('no data!!!');
 				}
+			});
+			service.getPeriodoNombre(periodo_id).then((re) => {
+				setPeriodo_nombre(re.nombre);
 			});
 		};
 		GetData();
@@ -315,7 +319,8 @@ export default function MatPaginationTable(props) {
 							prof={profesorSelected}
 							carga={cargaSelected}
 							profesoresToShow={profesores}
-							nombre_periodo={periodo_id}
+							id_periodo={periodo_id}
+							nombre_periodo={periodo_nombre}
 							loadNewData={loadNewDataFromSelector}
 						/>
 						<TableContainer className={classes.container}>

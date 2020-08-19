@@ -72,6 +72,8 @@ def bloque_create(request):
             if serializer.is_valid():
                 newBloque = serializer.save()
                 new_bloques += [{'id': newBloque.id}]
+            else:
+                print("Error in serializer BloqueCreate ", serializer)
         if len(new_bloques) == len(list_bloque):
             print(str(len(new_bloques)) + " objects were added")
             return Response(new_bloques, status=status.HTTP_201_CREATED)

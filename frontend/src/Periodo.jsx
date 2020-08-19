@@ -148,7 +148,6 @@ export default function Periodo() {
 	};
 
 	const refreshDataOnParent = (periodoId, periodoNombre) => {
-		//console.log(periodoId, periodoNombre);
 		let newData = [ ...data_rows ];
 		newData.map((obj) => {
 			if (obj.id === periodoId) {
@@ -156,10 +155,10 @@ export default function Periodo() {
 			}
 		});
 		if (!accionUpdate) {
-			newData.push({ periodoId, periodoNombre });
+			newData.push({ id: periodoId, nombre: periodoNombre });
 		}
-		setSelected([]);
 		setData_rows(newData);
+		setSelected([]);
 	};
 
 	const deletePeriodo = (c) => {
