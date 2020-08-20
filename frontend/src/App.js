@@ -6,38 +6,30 @@ import Periodo from './Periodo';
 import TablaBloque from './TablaBloque';
 import TablaBloque_CreateUpdate from './TablaBloque_CreateUpdate';
 import ViewHorario from './ViewHorario';
+import Configuraciones from './Configuraciones';
 import PrintIcon from '@material-ui/icons/Print';
+import HomeIcon from '@material-ui/icons/Home';
 
 const BaseLayout = () => (
 	<div className="container-fluid">
 		<nav className="navbar navbar-expand-lg navbar-light bg-light">
 			<a className="navbar-brand" href="/">
-				PROGRAMA HORARIO
+				<HomeIcon />PAGINA PRINCIPAL
 			</a>
-			<button
-				className="navbar-toggler"
-				type="button"
-				data-toggle="collapse"
-				data-target="#navbarNavAltMarkup"
-				aria-controls="navbarNavAltMarkup"
-				aria-expanded="false"
-				aria-label="Toggle navigation"
-			>
-				<span className="navbar-toggler-icon" />
-			</button>
 			<div className="collapse navbar-collapse" id="navbarNavAltMarkup">
 				<div className="navbar-nav">
-					<a className="nav-item nav-link" href="/configuraciones">
+					<a className="nav-item nav-link" href="/horario/configuraciones">
 						CONFIGURACIONES
 					</a>
-					<button onClick={() => window.print()}>
-						<PrintIcon />
-					</button>
 				</div>
 			</div>
+			<button onClick={() => window.print()}>
+				<PrintIcon />
+			</button>
 		</nav>
 		<div className="content">
 			<Route path="/" exact component={Periodo} />
+			<Route path="/horario/configuraciones" exact component={Configuraciones} />
 			<Route path="/:periodo" exact component={TablaBloque} />
 			<Route path="/:periodo/bloque/" exact component={TablaBloque_CreateUpdate} />
 			<Route path="/:periodo/bloque/:pk" exact component={TablaBloque_CreateUpdate} />
