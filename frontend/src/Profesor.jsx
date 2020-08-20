@@ -107,7 +107,9 @@ export default function Periodo() {
 
 	useEffect(() => {
 		service.getProfesores().then((result) => {
-			setData_rows(result.data);
+			let profesores = result.data;
+			profesores = profesores.filter((obj) => obj.id_profesor !== '+++');
+			setData_rows(profesores);
 		});
 	}, []);
 
@@ -140,6 +142,11 @@ export default function Periodo() {
 		handleClick(c.id);
 	};
 
+	const crearProfesor = (c) => {
+		setAccionUpdate(false);
+		handleClick(c.id);
+	};
+
 	const refreshDataOnParent = (profesor_id, profesor_code, profesorNombre) => {
 		let newData = [ ...data_rows ];
 		newData.map((obj) => {
@@ -156,12 +163,17 @@ export default function Periodo() {
 	};
 
 	const deleteProfesor = (c) => {
-		let per = c.id;
-	};
-
-	const crearProfesor = (c) => {
-		setAccionUpdate(false);
-		handleClick(c.id);
+		service
+			.updateProfesor({
+				id: c.id,
+				id_profesor: '+++',
+				nombre: c.nombre
+			})
+			.then((result) => {
+				let newData = data_rows.filter((ob) => ob.id !== result.data.id);
+				setData_rows(newData);
+				console.log('we delete profesor! ', result);
+			});
 	};
 
 	return (

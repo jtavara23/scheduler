@@ -193,9 +193,9 @@ export default function MatPaginationTable(props) {
 				})
 				.then((result) => {
 					let profesoresFromApi = result.data.map((prof) => {
-						return { value: prof.id_prof, display: prof.nombre_prof + '-' + prof.code_prof };
+						return { value: prof.id_prof, display: prof.nombre_prof, code_prof: prof.code_prof };
 					});
-					//console.log('profesoresFromApi ', profesoresFromApi);
+					profesoresFromApi = profesoresFromApi.filter((obj) => obj.code_prof !== '+++');
 					setProfesores(profesoresFromApi);
 				})
 				.catch((error) => {

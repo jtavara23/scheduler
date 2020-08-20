@@ -44,7 +44,9 @@ export default function TablaProfesores(props) {
 			setHistory(props.hist);
 			setPeriodo_id(props.periodo);
 			service.getProfesoresinPeriodo(props.periodo).then((result) => {
-				setData_rows(result.data);
+				let profesores = result.data;
+				profesores = profesores.filter((obj) => obj.code_profesor !== '+++');
+				setData_rows(profesores);
 			});
 		},
 		[ props.data_bloque ]
