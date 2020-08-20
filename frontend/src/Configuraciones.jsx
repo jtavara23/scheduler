@@ -10,20 +10,21 @@ import Select from '@material-ui/core/Select';
 import { withRouter } from 'react-router-dom';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 import Service from './services/BloqueService';
+import Profesor from './Profesor';
 
 const service = new Service();
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		margin: theme.spacing(3)
+		margin: theme.spacing(1)
 	},
 	button: {
 		margin: theme.spacing(1)
 	},
 	formControl: {
-		margin: theme.spacing(2),
+		margin: theme.spacing(1),
 		minWidth: 180
 	},
 	paper: {
@@ -77,103 +78,110 @@ const Configuraciones = () => {
 	};
 
 	return (
-		<Paper className={classes.root}>
-			<Paper className={classes.paper}>
-				<form className={classes.formControl} noValidate autoComplete="off">
-					<FormControl className={classes.formControl}>
-						<TextField
-							name="escuela"
-							label="Nueva Escuela"
-							value={nuevaEscuela}
-							onChange={(e) => setNuevaEscuela(e.target.value)}
-						/>
-					</FormControl>
+		<Grid container className={classes.root}>
+			<Grid item xs={7}>
+				<Paper className={classes.paper}>
+					<Profesor />
+				</Paper>
+			</Grid>
+			<Grid item xs={4}>
+				<Paper className={classes.paper}>
+					<Paper>
+						<form className={classes.formControl} noValidate autoComplete="off">
+							<FormControl className={classes.formControl}>
+								<TextField
+									name="escuela"
+									label="Nueva Escuela"
+									value={nuevaEscuela}
+									onChange={(e) => setNuevaEscuela(e.target.value)}
+								/>
+							</FormControl>
 
-					<div>
-						<Button
-							className={classes.button}
-							color="primary"
-							startIcon={<SaveIcon />}
-							variant="outlined"
-							onClick={(e) => handleSubmit(e)}
-						>
-							CREAR
-						</Button>
-					</div>
-				</form>
-			</Paper>
+							<div>
+								<Button
+									className={classes.button}
+									color="primary"
+									startIcon={<SaveIcon />}
+									variant="outlined"
+									onClick={(e) => handleSubmit(e)}
+								>
+									CREAR
+								</Button>
+							</div>
+						</form>
+					</Paper>
 
-			<Paper className={classes.paper}>
-				<form className={classes.formControl} noValidate autoComplete="off">
-					<FormControl className={classes.formControl}>
-						<InputLabel id="demo-simple-select-label">Seleccionar Escuela</InputLabel>
-						<Select
-							labelId="seleccionar-escuela"
-							id="selec-escuela"
-							value={selectedEscuela}
-							onChange={(e) => {
-								setSelectedEscuela(e.target.value);
-								loadCursoFromEscuela(e.target.value);
-							}}
-						>
-							{escuela.map((esc) => (
-								<MenuItem value={esc.value} key={esc.value}>
-									{esc.display}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+					<Paper className={classes.paper}>
+						<form className={classes.formControl} noValidate autoComplete="off">
+							<FormControl className={classes.formControl}>
+								<InputLabel id="demo-simple-select-label">Seleccionar Escuela</InputLabel>
+								<Select
+									labelId="seleccionar-escuela"
+									id="selec-escuela"
+									value={selectedEscuela}
+									onChange={(e) => {
+										setSelectedEscuela(e.target.value);
+										loadCursoFromEscuela(e.target.value);
+									}}
+								>
+									{escuela.map((esc) => (
+										<MenuItem value={esc.value} key={esc.value}>
+											{esc.display}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
 
-					<FormControl className={classes.formControl}>
-						<InputLabel id="demo-simple-select-label">Seleccionar Curso</InputLabel>
-						<Select
-							labelId="seleccionar-curso"
-							id="selec-curso"
-							value={selectedCurso}
-							onChange={(e) => setSelectedCurso(e.target.value)}
-						>
-							{curso.map((curso) => (
-								<MenuItem value={curso.value} key={curso.value}>
-									{curso.display}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+							<FormControl className={classes.formControl}>
+								<InputLabel id="demo-simple-select-label">Seleccionar Curso</InputLabel>
+								<Select
+									labelId="seleccionar-curso"
+									id="selec-curso"
+									value={selectedCurso}
+									onChange={(e) => setSelectedCurso(e.target.value)}
+								>
+									{curso.map((curso) => (
+										<MenuItem value={curso.value} key={curso.value}>
+											{curso.display}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
 
-					<FormControl className={classes.formControl}>
-						<TextField
-							name="curso"
-							label="Nuevo Curso"
-							value={nuevoCurso}
-							onChange={(e) => setNuevoCurso(e.target.value)}
-						/>
-					</FormControl>
+							<FormControl className={classes.formControl}>
+								<TextField
+									name="curso"
+									label="Nuevo Curso"
+									value={nuevoCurso}
+									onChange={(e) => setNuevoCurso(e.target.value)}
+								/>
+							</FormControl>
 
-					<div>
-						<Button
-							className={classes.button}
-							color="primary"
-							startIcon={<SaveIcon />}
-							variant="outlined"
-							onClick={(e) => handleSubmit(e)}
-						>
-							CREAR
-						</Button>
-						<Button
-							className={classes.button}
-							color="primary"
-							startIcon={<DeleteIcon />}
-							variant="outlined"
-							onClick={(e) => handleSubmit(e)}
-						>
-							ELIMINAR
-						</Button>
-					</div>
-				</form>
-			</Paper>
-
-			<Paper className={classes.paper} />
-		</Paper>
+							<div>
+								<Button
+									className={classes.button}
+									color="primary"
+									startIcon={<SaveIcon />}
+									variant="outlined"
+									onClick={(e) => handleSubmit(e)}
+								>
+									CREAR
+								</Button>
+								<Button
+									className={classes.button}
+									color="primary"
+									startIcon={<DeleteIcon />}
+									variant="outlined"
+									onClick={(e) => handleSubmit(e)}
+								>
+									ELIMINAR
+								</Button>
+							</div>
+						</form>
+					</Paper>
+				</Paper>
+			</Grid>
+		</Grid>
 	);
 };
 
