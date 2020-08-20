@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const Periodo_New = (props) => {
+const Profesor_Operations = (props) => {
 	const classes = useStyles();
 	const [ update, setUpdate ] = useState(false);
 	const [ profesor_id, setProfesor_id ] = useState('');
@@ -55,15 +55,25 @@ const Periodo_New = (props) => {
 	const handleSubmit = (e) => {
 		if (update) {
 			service
-				.updatePeriodo({
+				.updateProfesor({
 					id: profesor_id,
+					id_profesor: codeProfesor,
 					nombre: nombreProfesor
 				})
 				.then((rr) => {
-					props.refreshDataOnParent(profesor_id, nombreProfesor);
+					props.refreshDataOnParent(profesor_id, codeProfesor, nombreProfesor);
 				});
 		} else {
-			props.refreshDataOnParent('', nombreProfesor);
+			let newProfesorId = '';
+			service
+				.createProfesor({
+					id_profesor: codeProfesor,
+					nombre: nombreProfesor
+				})
+				.then((res) => {
+					newProfesorId = res.data.id;
+					props.refreshDataOnParent(newProfesorId, codeProfesor, nombreProfesor);
+				});
 		}
 	};
 
@@ -114,4 +124,4 @@ const Periodo_New = (props) => {
 	);
 };
 
-export default withStyles(useStyles)(Periodo_New);
+export default withStyles(useStyles)(Profesor_Operations);

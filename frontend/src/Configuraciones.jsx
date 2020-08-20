@@ -79,7 +79,7 @@ const Configuraciones = () => {
 
 	return (
 		<Grid container className={classes.root}>
-			<Grid item xs={7}>
+			<Grid item xs={8}>
 				<Paper className={classes.paper}>
 					<Profesor />
 				</Paper>

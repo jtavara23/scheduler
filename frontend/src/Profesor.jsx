@@ -14,9 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
-import QueueIcon from '@material-ui/icons/Queue';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -30,12 +28,12 @@ const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1
 	},
-	container: { maxHeight: 860 }
+	container: { maxHeight: 760 }
 }));
 
 const useToolbarStyles = makeStyles((theme) => ({
 	root: {
-		paddingLeft: theme.spacing(85),
+		paddingLeft: theme.spacing(5),
 		paddingRight: theme.spacing(1)
 	},
 	highlight:
@@ -67,7 +65,9 @@ const EnhancedTableToolbar = (props) => {
 			{numSelected.length > 0 ? (
 				<Typography className={classes.title} color="inherit" variant="subtitle1" component="div" />
 			) : (
-				<Typography className={classes.title} variant="h5" id="tableTitle" component="div" />
+				<Typography className={classes.title} variant="h5" id="tableTitle" component="div">
+					LISTA DE PROFESORES
+				</Typography>
 			)}
 
 			{numSelected.length > 0 ? (
@@ -94,7 +94,7 @@ const StyledTableCell = withStyles((theme) => ({
 		maxWidth: '5px'
 	},
 	body: {
-		fontSize: 14
+		fontSize: 13
 	}
 }))(TableCell);
 
@@ -140,15 +140,16 @@ export default function Periodo() {
 		handleClick(c.id);
 	};
 
-	const refreshDataOnParent = (periodoId, periodoNombre) => {
+	const refreshDataOnParent = (profesor_id, profesor_code, profesorNombre) => {
 		let newData = [ ...data_rows ];
 		newData.map((obj) => {
-			if (obj.id === periodoId) {
-				obj.nombre = periodoNombre;
+			if (obj.id === profesor_id) {
+				obj.id_profesor = profesor_code;
+				obj.nombre = profesorNombre;
 			}
 		});
 		if (!accionUpdate) {
-			newData.push({ id: periodoId, nombre: periodoNombre });
+			newData.push({ id: profesor_id, id_profesor: profesor_code, nombre: profesorNombre });
 		}
 		setData_rows(newData);
 		setSelected([]);
@@ -170,7 +171,7 @@ export default function Periodo() {
 			direction="column"
 			alignItems="center"
 			justify="center"
-			style={{ minHeight: '100vh' }}
+			style={{ minHeight: '60vh' }}
 		>
 			<Paper className={classes.root}>
 				<EnhancedTableToolbar
@@ -223,18 +224,11 @@ export default function Periodo() {
 						</TableBody>
 					</Table>
 				</TableContainer>
-				<TableContainer className={classes.boton}>
-					<Fab
-						variant="extended"
-						size="small"
-						color="primary"
-						aria-label="add"
-						onClick={(e) => crearProfesor(e)}
-					>
-						<SaveIcon />
-						Crear Profesor
-					</Fab>
-				</TableContainer>
+
+				<Fab variant="extended" size="small" color="primary" aria-label="add" onClick={(e) => crearProfesor(e)}>
+					<SaveIcon />
+					Crear Profesor
+				</Fab>
 			</Paper>
 		</Grid>
 	);

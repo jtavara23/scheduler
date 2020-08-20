@@ -124,6 +124,11 @@ class BloqueService {
 		return axios.post(url, periodo);
 	}
 
+	createProfesor(profesor) {
+		const url = `${API_URL}/api/horario/profesor/`;
+		return axios.post(url, profesor);
+	}
+
 	/**----------------------------------------------------- */
 	updateAsignacionProfesor(asignacion) {
 		const url = `${API_URL}/api/horario/asignacion/${asignacion.id}`;
@@ -150,6 +155,10 @@ class BloqueService {
 	updatePeriodo(periodo) {
 		const url = `${API_URL}/api/horario/periodos/${periodo.id}`;
 		return axios.put(url, periodo);
+	}
+	updateProfesor(profesor) {
+		const url = `${API_URL}/api/horario/profesor/${profesor.id}`;
+		return axios.put(url, profesor);
 	}
 	/**----------------------------------------------------- */
 	deleteAsignacion(asignacion_id) {

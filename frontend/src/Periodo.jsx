@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const useToolbarStyles = makeStyles((theme) => ({
 	root: {
-		paddingLeft: theme.spacing(85),
+		paddingLeft: theme.spacing(5),
 		paddingRight: theme.spacing(1)
 	},
 	highlight:
@@ -66,7 +66,9 @@ const EnhancedTableToolbar = (props) => {
 			{numSelected.length > 0 ? (
 				<Typography className={classes.title} color="inherit" variant="subtitle1" component="div" />
 			) : (
-				<Typography className={classes.title} variant="h5" id="tableTitle" component="div" />
+				<Typography className={classes.title} variant="h5" id="tableTitle" component="div">
+					LISTA DE PERIODOS
+				</Typography>
 			)}
 
 			{numSelected.length > 0 ? (
@@ -183,7 +185,7 @@ export default function Periodo() {
 			direction="column"
 			alignItems="center"
 			justify="center"
-			style={{ minHeight: '100vh' }}
+			style={{ maxHeight: '150vh' }}
 		>
 			<Paper className={classes.root}>
 				<EnhancedTableToolbar
