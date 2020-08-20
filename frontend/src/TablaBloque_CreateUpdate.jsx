@@ -87,9 +87,9 @@ const Bloque_CreateUpdate = (props) => {
 
 		service.getEscuelas().then((result) => {
 			let escuelasFromApi = result.data.map((esc) => {
-				return { value: esc.nombre, display: esc.nombre };
+				return { value: esc.nombre, display: esc.nombre, cursos: esc.cursos };
 			});
-			//console.log('profesoresFromApi ', escuelasFromApi);
+			escuelasFromApi = escuelasFromApi.filter((obj) => obj.cursos !== 0);
 			setEscuela(escuelasFromApi);
 		});
 
@@ -121,9 +121,10 @@ const Bloque_CreateUpdate = (props) => {
 
 					service.getCursosOfEscuela(escuela.replace(/ /g, '-')).then((result) => {
 						let cursosFromApi = result.data.map((cur) => {
-							return { value: cur.nombre, display: cur.nombre };
+							return { value: cur.nombre, display: cur.nombre, secciones: cur.secciones };
 						});
 						//console.log('cursos ', cursosFromApi);
+						cursosFromApi = cursosFromApi.filter((obj) => obj.secciones !== 0);
 						setCurso(cursosFromApi);
 					});
 				});
@@ -283,9 +284,9 @@ const Bloque_CreateUpdate = (props) => {
 		let esc = escuela.replace(/ /g, '-');
 		service.getCursosOfEscuela(esc).then((result) => {
 			let cursosFromApi = result.data.map((cur) => {
-				return { value: cur.nombre, display: cur.nombre };
+				return { value: cur.nombre, display: cur.nombre, secciones: cur.secciones };
 			});
-			//console.log('cursos ', cursosFromApi);
+			cursosFromApi = cursosFromApi.filter((obj) => obj.secciones !== 0);
 			setCurso(cursosFromApi);
 		});
 	};

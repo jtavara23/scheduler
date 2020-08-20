@@ -109,6 +109,16 @@ class BloqueService {
 		return axios.post(url, bloque);
 	}
 
+	createCurso(curso) {
+		const url = `${API_URL}/api/horario/curso/`;
+		return axios.post(url, curso);
+	}
+
+	createEscuela(escuela) {
+		const url = `${API_URL}/api/horario/escuela/`;
+		return axios.post(url, escuela);
+	}
+
 	createFecha(fecha) {
 		const url = `${API_URL}/api/horario/fecha/`;
 		return axios.post(url, fecha);
@@ -165,14 +175,27 @@ class BloqueService {
 		const url = `${API_URL}/api/horario/asignacion/${asignacion_id}`;
 		return axios.delete(url);
 	}
+
 	deleteAsignacionOfPeriodo(id) {
 		const url = `${API_URL}/api/horario/asignacion_periodo/${id}`;
 		return axios.delete(url);
 	}
+
 	deleteBloqueOfPeriodo(id) {
 		const url = `${API_URL}/api/horario/bloque_periodo/${id}`;
 		return axios.delete(url);
 	}
+
+	deleteCurso(curso) {
+		const url = `${API_URL}/api/horario/curso/${curso.nombre}`;
+		return axios.put(url, curso);
+	}
+
+	deleteEscuela(escuela) {
+		const url = `${API_URL}/api/horario/escuela/${escuela.nombre}`;
+		return axios.put(url, escuela);
+	}
+
 	deleteHoraProfeOfPeriodo(id) {
 		const url = `${API_URL}/api/horario/hora_profe_periodo/${id}`;
 		return axios.delete(url);

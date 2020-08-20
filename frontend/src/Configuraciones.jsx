@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
 		margin: theme.spacing(1)
 	},
 	button: {
-		margin: theme.spacing(1)
+		margin: theme.spacing(3),
+		padding: theme.spacing(1)
 	},
 	formControl: {
 		margin: theme.spacing(1),
@@ -33,15 +34,6 @@ const useStyles = makeStyles((theme) => ({
 		color: theme.palette.text.secondary
 	}
 }));
-
-function createJsonFecha(param) {
-	let data = param.split('-');
-	return {
-		dia_fecha: data[0],
-		hora_ini: data[1],
-		hora_fin: data[2]
-	};
-}
 
 const Configuraciones = () => {
 	const classes = useStyles();
@@ -55,39 +47,108 @@ const Configuraciones = () => {
 	useEffect(() => {
 		service.getEscuelas().then((result) => {
 			let escuelasFromApi = result.data.map((esc) => {
-				return { value: esc.nombre, display: esc.nombre };
+				return { value: esc.nombre, display: esc.nombre, cursos: esc.cursos };
 			});
-			//console.log('profesoresFromApi ', escuelasFromApi);
+			escuelasFromApi = escuelasFromApi.filter((obj) => obj.cursos !== 0);
 			setEscuela(escuelasFromApi);
 		});
 	}, []);
 
 	//console.log(this.history);
 
-	const handleSubmit = (event) => {};
+	const handleSubmit = (e, tipo) => {
+		if (tipo == 'e') {
+			service
+				.createEscuela({
+					nombre: nuevaEscuela,
+					cursos: 1
+				})
+				.then((r) => {
+					console.log('escuela created');
+					setNuevaEscuela('');
+				});
+		} else {
+			service
+				.createCurso({
+					nombre: nuevoCurso,
+					secciones: 1,
+					escuela_nombre: selectedEscuela
+				})
+				.then((r) => {
+					console.log('curso created');
+					setNuevoCurso('');
+				});
+		}
+	};
+
+	const handleDelete = (e, tipo) => {
+		if (tipo == 'e') {
+			let esc = selectedEscuela.replace(/ /g, '-');
+			service
+				.deleteEscuela({
+					nombre: esc,
+					cursos: 0
+				})
+				.then((r) => {
+					console.log('escuela eliminado');
+					setSelectedEscuela('');
+				});
+		} else {
+			let cur = selectedCurso.replace(/ /g, '-');
+			service
+				.deleteCurso({
+					nombre: cur,
+					secciones: 0,
+					escuela_nombre: selectedEscuela
+				})
+				.then((r) => {
+					console.log('curso eliminaod');
+					setSelectedCurso('');
+				});
+		}
+	};
 
 	const loadCursoFromEscuela = (escuela) => {
 		let esc = escuela.replace(/ /g, '-');
 		service.getCursosOfEscuela(esc).then((result) => {
 			let cursosFromApi = result.data.map((cur) => {
-				return { value: cur.nombre, display: cur.nombre };
+				return { value: cur.nombre, display: cur.nombre, secciones: cur.secciones };
 			});
-			//console.log('cursos ', cursosFromApi);
+			cursosFromApi = cursosFromApi.filter((obj) => obj.secciones !== 0);
 			setCurso(cursosFromApi);
 		});
 	};
 
 	return (
 		<Grid container className={classes.root}>
-			<Grid item xs={8}>
+			<Grid item xs={6}>
 				<Paper className={classes.paper}>
 					<Profesor />
 				</Paper>
 			</Grid>
-			<Grid item xs={4}>
+			<Grid item xs={6}>
 				<Paper className={classes.paper}>
 					<Paper>
 						<form className={classes.formControl} noValidate autoComplete="off">
+							<FormControl className={classes.formControl}>
+								<InputLabel id="demo-simple-select-label">Seleccionar Escuela</InputLabel>
+								<Select
+									labelId="seleccionar-escuela"
+									id="selec-escuela"
+									value={selectedEscuela}
+									onChange={(e) => {
+										setSelectedEscuela(e.target.value);
+										loadCursoFromEscuela(e.target.value);
+									}}
+								>
+									{escuela.map((esc) => (
+										<MenuItem value={esc.value} key={esc.value}>
+											{esc.display}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+
 							<FormControl className={classes.formControl}>
 								<TextField
 									name="escuela"
@@ -101,9 +162,18 @@ const Configuraciones = () => {
 								<Button
 									className={classes.button}
 									color="primary"
+									startIcon={<DeleteIcon />}
+									variant="outlined"
+									onClick={(e) => handleDelete(e, 'e')}
+								>
+									ELIMINAR
+								</Button>
+								<Button
+									className={classes.button}
+									color="primary"
 									startIcon={<SaveIcon />}
 									variant="outlined"
-									onClick={(e) => handleSubmit(e)}
+									onClick={(e) => handleSubmit(e, 'e')}
 								>
 									CREAR
 								</Button>
@@ -161,20 +231,20 @@ const Configuraciones = () => {
 								<Button
 									className={classes.button}
 									color="primary"
-									startIcon={<SaveIcon />}
+									startIcon={<DeleteIcon />}
 									variant="outlined"
-									onClick={(e) => handleSubmit(e)}
+									onClick={(e) => handleDelete(e, 'c')}
 								>
-									CREAR
+									ELIMINAR
 								</Button>
 								<Button
 									className={classes.button}
 									color="primary"
-									startIcon={<DeleteIcon />}
+									startIcon={<SaveIcon />}
 									variant="outlined"
-									onClick={(e) => handleSubmit(e)}
+									onClick={(e) => handleSubmit(e, 'c')}
 								>
-									ELIMINAR
+									CREAR
 								</Button>
 							</div>
 						</form>
