@@ -306,6 +306,7 @@ export default function MatPaginationTable(props) {
 				}
 			});
 			setData(newList);
+			setSelected([]);
 		});
 	};
 
@@ -325,7 +326,7 @@ export default function MatPaginationTable(props) {
 						/>
 						<TableContainer className={classes.container}>
 							<Table stickyHeader aria-label="sticky table" size={dense ? 'small' : 'medium'}>
-								<TableHead numSelected={selected.length}>
+								<TableHead>
 									<TableRow>
 										<StyledTableCell>■■</StyledTableCell>
 										<StyledTableCell>Escuela</StyledTableCell>
