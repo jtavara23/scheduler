@@ -5,7 +5,7 @@ from rest_framework import status
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import connection
 from ..models import Profesor
-from ..serializers import ProfesorSerializer, TablaProfesoresSerializer, dictfetchall, AvailableProfesoresSerializer, ViewHorarioSerializer
+from ..serializers import ProfesorSerializer, TablaProfesoresSerializer, dictfetchall, AvailableProfesoresSerializer, ViewHorarioSerializer, CargaTotalSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -52,6 +52,25 @@ def view_horario_profesor(request):
     return Response(
         serializer.data, status=status.HTTP_200_OK
     )
+
+
+@api_view(['POST'])
+def get_carga_total(request):
+    Xperiodo = str(request.data['periodo'])
+    Xprofesor = str(request.data['profesor'])
+    cursor = connection.cursor()
+    print(">>", Xperiodo, Xprofesor)
+    statement = "call getCargaTotal(" + \
+        Xperiodo+",'"+Xprofesor+"')"
+    cursor.execute(statement)
+    results = dictfetchall(cursor)
+    cursor.close()
+
+    serializer = CargaTotalSerializer(
+        results, context={'request': request}, many=True)
+    print(serializer.data)
+    return Response(
+        serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])
@@ -118,8 +137,8 @@ def get_available_teachers(request):
     Xhora_ini = request.data['hora_ini']
     Xhora_fin = request.data['hora_fin']
     cursor = connection.cursor()
-    statement = "call get_available_profesores(" + \
-        Xperiodo+",'"+Xdia+"','"+Xhora_ini+"','"+Xhora_fin+"')"
+    statement = "call get_available_profesores(" + Xperiodo + \
+        ",'"+Xdia+"','"+Xhora_ini+"','"+Xhora_fin+"')"
     cursor.execute(statement)
     results = dictfetchall(cursor)
     cursor.close()

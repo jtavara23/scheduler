@@ -128,3 +128,7 @@ class ViewHorarioSerializer(serializers.Serializer):
     dia_fecha = serializers.CharField()
     hora_ini = serializers.TimeField()
     hora_fin = serializers.TimeField()
+
+
+class CargaTotalSerializer(serializers.Serializer):
+    carga = serializers.IntegerField()

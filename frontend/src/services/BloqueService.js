@@ -93,6 +93,10 @@ class BloqueService {
 		const url = `${API_URL}/api/horario/profesor_available/`;
 		return axios.post(url, datos).then((response) => response.data);
 	}
+	getCargaTotal(datos) {
+		const url = `${API_URL}/api/horario/profesor_cargaTotal/`;
+		return axios.post(url, datos).then((response) => response.data);
+	}
 
 	/**----------------------------------------------------- */
 	createAsignacion(asignacion) {

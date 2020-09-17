@@ -30,6 +30,7 @@ export default function ViewHorario(props) {
 	const [ datax, setData ] = useState('');
 	const [ profesor, setProfesor ] = useState('');
 	const [ periodo, setPeriodo ] = useState('');
+	const [ carga, setCarga ] = useState('');
 	const classes = useToolbarStyles();
 
 	useEffect(() => {
@@ -88,6 +89,14 @@ export default function ViewHorario(props) {
 			service.getProfesor(params.profId).then((result) => {
 				setProfesor(result.nombre + ' ID (' + result.id_profesor + ')');
 			});
+			service
+				.getCargaTotal({
+					periodo: params.profId,
+					profesor: params.profId
+				})
+				.then((result) => {
+					setCarga(result[0].carga);
+				});
 		});
 	}, []);
 
@@ -97,7 +106,7 @@ export default function ViewHorario(props) {
 				{' Profesor: ' + profesor}
 			</Typography>
 			<Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-				{'PERIODO: ' + periodo}
+				{'PERIODO: ' + periodo + ', carga: ' + carga}
 			</Typography>
 
 			<Scheduler data={datax.data} height={'auto'}>
