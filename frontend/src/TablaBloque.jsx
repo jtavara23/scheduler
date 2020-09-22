@@ -156,6 +156,7 @@ export default function MatPaginationTable(props) {
 			service.getPeriodo(periodo_id).then((result) => {
 				if (result.data.length) {
 					setData(result.data);
+					setRowsPerPage(result.data.length);
 				} else {
 					console.log('no data!!!');
 				}
