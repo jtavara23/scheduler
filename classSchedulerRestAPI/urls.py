@@ -62,6 +62,7 @@ urlpatterns = [
 
     url(r'^api/horario/periodo/(?P<pk>[^\s]+)$',
         view_principal.tabla_periodo),  # get get_tabla_periodo store procedure
+    url(r'^api/horario/periodo/$', view_principal.getLastPeriodo),
 
     url(r'^api/horario/periodos/$', view_periodo.periodo_list),
     url(r'^api/horario/periodos/(?P<id>[^\s]+)$', view_periodo.periodo_detail),

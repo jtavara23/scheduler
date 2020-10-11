@@ -18,6 +18,7 @@ def hora_profe_periodo_list(request):
 
     elif request.method == 'POST':
         serializer = HoraProfePeriodoSerializer(data=request.data)
+        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -26,6 +26,21 @@ def tabla_periodo(request, pk):
     })
 
 
+@api_view(['GET'])
+def getLastPeriodo(request):
+    cursor = connection.cursor()
+    statement = "SELECT * FROM horario.horario_periodo order by id desc limit 1;"
+    cursor.execute(statement)
+    results = dictfetchall(cursor)
+    cursor.close()
+
+    serializer = PeriodoSerializer(
+        results, context={'request': request}, many=True)
+    return Response({
+        'data': serializer.data
+    })
+
+
 @api_view(['GET', 'DELETE'])
 def bloqueFromPeriodo(request, pk):
     try:

@@ -65,6 +65,7 @@ const Profesor_Operations = (props) => {
 				});
 		} else {
 			let newProfesorId = '';
+			let lastPeriod = '';
 			service
 				.createProfesor({
 					id_profesor: codeProfesor,
@@ -72,7 +73,20 @@ const Profesor_Operations = (props) => {
 				})
 				.then((res) => {
 					newProfesorId = res.data.id;
-					props.refreshDataOnParent(newProfesorId, codeProfesor, nombreProfesor);
+					service.getLastPeriodo().then((lastP) => {
+						lastPeriod = lastP.data[0].id;
+						console.log('>>>>', lastP.data);
+						console.log('>>>>', lastPeriod);
+						service
+							.createHoraProfePeriodo({
+								carga: 0,
+								periodo: lastPeriod,
+								profesor: newProfesorId
+							})
+							.then((resu) => {
+								props.refreshDataOnParent(newProfesorId, codeProfesor, nombreProfesor);
+							});
+					});
 				});
 		}
 	};

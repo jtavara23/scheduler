@@ -55,6 +55,11 @@ class BloqueService {
 		return axios.get(url).then((response) => response.data);
 	}
 
+	getLastPeriodo() {
+		const url = `${API_URL}/api/horario/periodo/`;
+		return axios.get(url).then((response) => response.data);
+	}
+
 	getPeriodo(pk) {
 		const url = `${API_URL}/api/horario/periodo/${pk}`;
 		return axios.get(url).then((response) => response.data);
@@ -89,20 +94,24 @@ class BloqueService {
 		const url = `${API_URL}/api/horario/profesores_periodo/${per_id}`;
 		return axios.get(url).then((response) => response.data);
 	}
+
 	getProfesores_available(datos) {
 		const url = `${API_URL}/api/horario/profesor_available/`;
 		return axios.post(url, datos).then((response) => response.data);
 	}
+
 	getCargaTotal(datos) {
 		const url = `${API_URL}/api/horario/profesor_cargaTotal/`;
 		return axios.post(url, datos).then((response) => response.data);
 	}
 
 	/**----------------------------------------------------- */
+
 	createAsignacion(asignacion) {
 		const url = `${API_URL}/api/horario/asignacion/`;
 		return axios.post(url, asignacion);
 	}
+
 	createAsignacion_duplication(asignacion_id) {
 		const url = `${API_URL}/api/horario/asignacion_duplicate/${asignacion_id}`;
 		return axios.post(url);
