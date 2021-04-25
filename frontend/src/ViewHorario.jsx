@@ -91,7 +91,7 @@ export default function ViewHorario(props) {
 			});
 			service
 				.getCargaTotal({
-					periodo: params.profId,
+					periodo: params.periodo,
 					profesor: params.profId
 				})
 				.then((result) => {
