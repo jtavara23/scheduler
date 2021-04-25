@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import CachedIcon from '@material-ui/icons/Cached';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 const service = new Service();
 
@@ -80,6 +81,30 @@ export default function TablaProfesores(props) {
 		history.push('/' + periodo_id + '/view_horario/' + selected[0]);
 	};
 
+	const reloadCargaProfesor = (e) => {
+		//console.log('Profe, sele ', selected[0]);
+		service
+			.getCargaTotal({
+				periodo: periodo_id,
+				profesor: selected[0]
+			})
+			.then((result) => {
+				service.getHoraProfePeriodoCarga(periodo_id + '-' + selected[0]).then((response) => {
+					let hpp_id = response.id;
+					//console.log('we get ', result[0].carga);
+					// console.log('hpp_id', hpp_id);
+					service.updateCargaProfesor({
+						id: hpp_id, // hora_profesor_periodo_id
+						carga: result[0].carga,
+						periodo: periodo_id,
+						profesor: selected[0]
+					});
+
+					console.log('we reload cargaHoraria sucessfully of ', selected[0]);
+				});
+			});
+	};
+
 	return (
 		<Paper className={classes.root}>
 			<TableContainer className={classes.container}>
@@ -113,6 +138,7 @@ export default function TablaProfesores(props) {
 			</TableContainer>
 			<TableContainer className={classes.boton}>
 				<Fab
+					m="2rem"
 					variant="extended"
 					size="small"
 					color="primary"
@@ -121,6 +147,18 @@ export default function TablaProfesores(props) {
 				>
 					<VisibilityIcon />
 					Ver Horario
+				</Fab>
+
+				<Fab
+					m="2rem"
+					variant="extended"
+					size="small"
+					color="secondary"
+					aria-label="add"
+					onClick={(e) => reloadCargaProfesor(e)}
+				>
+					<CachedIcon />
+					Carga
 				</Fab>
 			</TableContainer>
 		</Paper>
